@@ -4,32 +4,38 @@ import SectionedMultiSelect from "react-native-sectioned-multi-select";
 
 const items=[
     {name: "House",
-    id:1},
+    id:"House"},
     {name: "Apartment",
-    id:2},
+    id:"Apartment"},
     {name: "Townhouse",
-    id:3},
+    id:"Townhouse"},
     {name: "Vacant Land",
-    id:4},
+    id:"Vacant Land"},
     {name: "Farm",
-    id:5},
+    id:"Farm"},
     {name: "Commercial",
-    id:6},
+    id:"Commercial"},
     {name:  "Industrial",
-    id:7}
+    id:"Industrial"}
 ]
 
 export default class ModalDropdown extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-          selectedItems: [],
+          selectedItems: this.props.setDrop(),
           first:true
         };
       }
      onSelectedItemsChange = (selectedItems) => {
-        this.setState({ selectedItems });
-        this.props.setproperties(selectedItems);
+        
+       /* if(selectedItems.length==0){
+            this.setState({selectedItems:this.props.setDrop})
+        }
+        else{*/
+            
+            this.setState({ selectedItems });
+       // }
         
       };
 

@@ -11,10 +11,11 @@ export default class ModalSearch extends React.Component {
   constructor(props) {
     super(props);
     this.state={
-      searchResult: ""
+      searchResult: "",
+      defaultVal:""
     }
   }
- 
+  
   render() {
     return (
       <View >
@@ -33,7 +34,7 @@ export default class ModalSearch extends React.Component {
            // this.setState({searchResult:data.description})
           }}
           getDefaultValue={() => {
-            return ""; // text input default value
+            return this.props.setSearch()+""; // text input default value
           }}
           query={{
             key: "AIzaSyBnghjKCGZfylLUWssl8SQbM8ILGeYW5l0",

@@ -11,10 +11,12 @@ export default class List extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            array:[]
+            array:[],
+            id:""
           }
         this.goToHome=this.goToHome.bind(this)
         this.showModal=this.showModal.bind(this)
+        this.setPropId=this.setPropId.bind(this)
     }
     getList(){
       axios.get('https://hosting-property-clone.herokuapp.com/properties').then(res =>{
@@ -28,16 +30,21 @@ export default class List extends React.Component{
       return(this.props.goToH())
     }
     showModal(){
-      this.props.showEditMod()
+      this.props.showEditMod(this.state.id)
+    } 
+    setPropId(PropId){
+      this.setState({
+        id:PropId
+      })
     }
-    ShowList(show){
+    ShowList(show,fun){
     this.getList()
      /* var list =this.state.array.services.map()*/
     let jsonData = this.state.array
     let data = jsonData.map(function(item) {
       return(
         
-        <View>
+        <View key={item["_id"]}> 
         <View style={styles.card,{borderColor:"#ffffff",borderLeftWidth:5,borderRightWidth:5,borderTopWidth:5,marginTop: 5,}}>
              <View style={styles.cardHeader}>
              <View>
@@ -46,15 +53,14 @@ export default class List extends React.Component{
                       <TouchableOpacity>
                       </TouchableOpacity>
               </View>
-
              </View>
             <Image style={styles.CardImage}   source={{uri: item["imageUrl"]}} />
- <Text style={styles.priceText}>{""+item["price"]}</Text>
+          <Text style={styles.priceText}>{""+item["price"]}</Text>
          </View>
          <View style={styles.cardFooter}>
                  <View style={styles.socialBarContainer} > 
                      <View style={styles.socialBarSection} >
-                         <TouchableOpacity  onPress={show} style={styles.socialBarButton} >
+                         <TouchableOpacity  onPress={()=>{show(),fun(item["_id"])}} style={styles.socialBarButton} >
                              <View>
                                  <Image style={styles.icon} source ={require("../../../images/icons8-edit-64.png")} />
                                  <Text>Edit</Text>
@@ -78,7 +84,7 @@ export default class List extends React.Component{
     );
     });
 
-    if(data.length<3){
+    if(data.length<1){
       return(<View style={{justifyContent:"center",flex:1}}><Empty goTo={this.goToHome}/></View>)
     }
     else{
@@ -94,7 +100,7 @@ export default class List extends React.Component{
 
             <View style = {styles.container}>
                {
-                 this.ShowList(this.showModal)
+                 this.ShowList(this.showModal,this.setPropId)
                }
             </View> 
         );

@@ -10,64 +10,104 @@ import Dropdown from "./Dropdown";
 import ModalDropdown from "./ModalDropdown";
 import ModalSearch from "./ModalSearch";
 import List from "./List";
+import axios from "axios"
 
 
 export default class ModalView extends React.Component{
         constructor(props){
           super(props);
           this.state={
-            sliderValue:0
+            sliderValue:0,
+            id:"",
+            address:"",
+            properties:[],
+            imageUrl:"",
+            price:""
           }
           this.showEditModal=this.showEditModal.bind(this);
+          this.setSearch=this.setSearch.bind(this);
+          this.setDrop=this.setDrop.bind(this);
           this.goToHome=this.goToHome.bind(this);
         }
-        showEditModal(){
-          this.refs.editModal.open()
-        }
+
+        showEditModal(idProp){
+            this.setState({id:idProp+""})
+            this.refs.editModal.open();
+          }
+        closeModal=()=>{
+          this.refs.editModal.close();
+      }
         goToHome(){
           return(this.props.goToHome)
         }
+        getAPIData(){
+          axios.get('https://hosting-property-clone.herokuapp.com/properties/5ddd8da0f8ce1527448596fb').then(res =>{
+          this.setState({
+              address:res.data["location"],
+              properties:  res.data["name"].split(","),
+              imageUrl:res.data["imageUrl"],
+              price:res.data["price"]
+          })
+            })
+            .catch(error =>{
+                console.log(error)
+            })
+        }
+        setSearch(){
+          return(this.state.address+"")
+        }
+        setDrop(){
+          let arr = this.state.properties;
+          if(arr.length==1){
+          arr[0]=arr[0].replace(",","")
+          return(arr)
+          }
+          else{
+            return(arr)
+          }
+        }
         render (){
+          this.getAPIData()
+        let mod =(
+          <Modal ref={"editModal"} transparent={true} swipeToClose={false} style={{backgroundColor:"#455a64",borderRadius:Platform.OS==="ios" ? 30:0, shadowRadius:10}} backdrop={true} onClosed={()=>{ alert("edited")}}>
+          <Text style={{textAlign:"center", backgroundColor: "#00BFFF",color:"#ffffff"}}>Edit</Text>
+        <ScrollView style={{flex:1,marginBottom:50,marginLeft:10,marginRight:10,borderRightColor:"#ffffff",borderLeftColor:"#ffffff",borderLeftWidth:5,borderRightWidth:5}}> 
+          <View >
+             <ModalSearch setSearch={this.setSearch}/>
+          </View> 
+          <View style={{marginTop:5,marginBottom:5}}>
+          <ModalDropdown setDrop={this.setDrop}/>
+          </View>
+          <Image style={styles.CardImage}  source ={require("../../../images/395_Detroit_St.25_forprintuse.0.jpg")} />
+          <View style={{marginLeft:10,marginBottom:20,marginRight:10,alignItems:"center",marginTop:20}}>
+                  <Text style={{color:"white",fontSize:20}}>Price: R {this.state.sliderValue}</Text>
+                  <Slider style={styles.sliderBar} minimumValue={0} maximumValue={1000000} step={100} value={this.state.sliderValue} onValueChange={(sliderValue)=>this.setState({sliderValue})} minimumTrackTintColor="#FFFFFF" maximumTrackTintColor="#000000"/>					
+          </View>
+          </ScrollView>
+            <View style={styles.footer}>
+             <View style={{justifyContent:"center",}}> 
+                <TouchableOpacity onPress={this.closeModal} >
+                  <Image style={styles.icon}  source ={require("../../../images/icons8-close-window-50.png")} />
+                  <Text>Close</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={{justifyContent:"center"}}>
+                <TouchableOpacity  style={{justifyContent:"center"}}>
+                  <Image style={styles.icon} source ={require("../../../images/icons8-trash-50.png")}/>
+                  <Text>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+        )
         return(
 
           <View style = {styles.container}>
-          <Modal ref={"editModal"} transparent={true} swipeToClose={false} style={{backgroundColor:"#455a64",borderRadius:Platform.OS==="ios" ? 30:0, shadowRadius:10}} backdrop={true} onClosed={()=>{ alert("edited")}}>
-        <Text style={{textAlign:"center", backgroundColor: "#00BFFF",color:"#ffffff"}}>Edit</Text>
-      <ScrollView style={{flex:1,marginBottom:50}}> 
-        <View >
-           <ModalSearch setSearch={this.setSearch}/>
-        </View> 
-        <View style={{marginTop:5,marginBottom:5}}>
-        <ModalDropdown setDrop={this.setDrop}/>
-        </View>
-        <Image style={styles.CardImage}  source ={require("../../../images/395_Detroit_St.25_forprintuse.0.jpg")} />
-        <View style={{marginLeft:10,marginRight:10,alignItems:"center",marginTop:20}}>
-                <Text style={{color:"white",fontSize:20}}>Price: R {this.state.sliderValue}</Text>
-                <Slider style={styles.sliderBar} minimumValue={0} maximumValue={1000000} step={100} value={this.state.sliderValue} onValueChange={(sliderValue)=>this.setState({sliderValue})} minimumTrackTintColor="#FFFFFF" maximumTrackTintColor="#000000"/>					
-        </View>
-        <View style={{marginBottom:20,alignItems:"center"}}>
-          <TouchableOpacity  style={styles.button}>
-              <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
-        </ScrollView>
-          <View style={styles.footer}>
-           <View style={{justifyContent:"center",}}> 
-              <TouchableOpacity onPress={this.closeModal} >
-                <Image style={styles.icon}  source ={require("../../../images/icons8-close-window-50.png")} />
-                <Text>Close</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={{justifyContent:"center"}}>
-              <TouchableOpacity  style={{justifyContent:"center"}}>
-                <Image style={styles.icon} source ={require("../../../images/icons8-trash-50.png")}/>
-                <Text>Delete</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-        <List showEditMod={this.showEditModal} goToH={this.goToHome}/> 
-       </View>   
+            {
+              mod
+            }
+          <List showEditMod={this.showEditModal} goToH={this.goToHome}/> 
+        </View>   
             );
     }
 }
@@ -113,7 +153,7 @@ const styles = StyleSheet.create({
       },
        CardImage:{
         flex: 1,
-        height:90,
+        height:250,
         width: null,
       },
       
