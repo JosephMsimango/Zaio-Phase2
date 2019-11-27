@@ -22,12 +22,14 @@ export default class ModalView extends React.Component{
             address:"",
             properties:[],
             imageUrl:"",
-            price:""
+            sliderValue:0
           }
           this.showEditModal=this.showEditModal.bind(this);
           this.setSearch=this.setSearch.bind(this);
           this.setDrop=this.setDrop.bind(this);
           this.goToHome=this.goToHome.bind(this);
+          this.addressFromSeach=this.addressFromSeach.bind(this);
+          this.propertiesFromDrop=this.propertiesFromDrop.bind(this)
         }
 
         showEditModal(idProp){
@@ -36,17 +38,28 @@ export default class ModalView extends React.Component{
           }
         closeModal=()=>{
           this.refs.editModal.close();
-      }
+        }
         goToHome(){
           return(this.props.goToHome)
         }
+
+        addressFromSeach(arg){
+          console.log(arg)
+              this.setState({address:arg})
+        }
+        propertiesFromDrop(arg){
+          console.log(arg)
+              this.setState({properties:arg})
+        }
         getAPIData(){
-          axios.get('https://hosting-property-clone.herokuapp.com/properties/5ddd8da0f8ce1527448596fb').then(res =>{
+          axios.get('https://hosting-property-clone.herokuapp.com/properties/5ddef545fc7a730004f3dd08').then(res =>{
+            let p =res.data["price"]
+            let pr =parseInt(p.replace("R ",""))
           this.setState({
               address:res.data["location"],
               properties:  res.data["name"].split(","),
               imageUrl:res.data["imageUrl"],
-              price:res.data["price"]
+              sliderValue:pr
           })
             })
             .catch(error =>{
@@ -73,16 +86,21 @@ export default class ModalView extends React.Component{
           <Text style={{textAlign:"center", backgroundColor: "#00BFFF",color:"#ffffff"}}>Edit</Text>
         <ScrollView style={{flex:1,marginBottom:50,marginLeft:10,marginRight:10,borderRightColor:"#ffffff",borderLeftColor:"#ffffff",borderLeftWidth:5,borderRightWidth:5}}> 
           <View >
-             <ModalSearch setSearch={this.setSearch}/>
+             <ModalSearch setSearch={this.setSearch} addressFromSeach={this.addressFromSeach}/>
           </View> 
           <View style={{marginTop:5,marginBottom:5}}>
           <ModalDropdown setDrop={this.setDrop}/>
           </View>
           <Image style={styles.CardImage}  source ={require("../../../images/395_Detroit_St.25_forprintuse.0.jpg")} />
-          <View style={{marginLeft:10,marginBottom:20,marginRight:10,alignItems:"center",marginTop:20}}>
+          <View style={{marginLeft:10,marginRight:10,alignItems:"center",marginTop:20}}>
                   <Text style={{color:"white",fontSize:20}}>Price: R {this.state.sliderValue}</Text>
                   <Slider style={styles.sliderBar} minimumValue={0} maximumValue={1000000} step={100} value={this.state.sliderValue} onValueChange={(sliderValue)=>this.setState({sliderValue})} minimumTrackTintColor="#FFFFFF" maximumTrackTintColor="#000000"/>					
           </View>
+          <View style={{marginBottom:20,alignItems:"center"}}>
+          <TouchableOpacity  style={styles.button}>
+              <Text style={styles.buttonText}>Save</Text>
+          </TouchableOpacity>
+        </View>
           </ScrollView>
             <View style={styles.footer}>
              <View style={{justifyContent:"center",}}> 

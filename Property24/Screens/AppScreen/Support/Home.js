@@ -81,7 +81,6 @@ export default class Home extends React.Component{
                         "location": this.state.address,
                         "imageUrl":"https://si.wsj.net/public/resources/images/B3-DM067_RIGHTS_IM_20190319162958.jpg",
                         "price": "R "+this.state.price
-            
                     },{
                         "headers": {
                         'Content-Type': 'application/json;charset=UTF-8',
@@ -94,7 +93,7 @@ export default class Home extends React.Component{
                     .catch(error =>{
                         this.setState({
                             showAlert: true,
-                            message:"An error occured! Please try again later!"
+                            message:"Property"
                         });
                     })
                   //  this.props.navigation.navigate("Saved");
