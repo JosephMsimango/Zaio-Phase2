@@ -30,15 +30,14 @@ export default class Saved extends React.Component{
         this.props.navigation.navigate("Home")
     }
     render(){
-        
+        /*<List goToHome={this.goToHome}/>*/
         return(
 
             <View style = {styles.container}>
                 <TouchableOpacity onPress={this.goToHome}>
                 <Logo/>
                 </TouchableOpacity>
-                <List goToHome={this.goToHome}/>
-              
+                <ModalView goToHome={this.goToHome}/>
             </View>
         );
     }

@@ -13,14 +13,8 @@ export default class List extends React.Component{
         this.state={
             array:[]
           }
-        this.showEditModal=this.showEditModal.bind(this);
-        this.goToHome=this.goToHome.bind(this);
-    }
-    showEditModal=()=>{
-        this.props.showEditModal
-    }
-    goToHome(){
-      return(this.props.goToHome)
+        this.goToHome=this.goToHome.bind(this)
+        this.showModal=this.showModal.bind(this)
     }
     getList(){
       axios.get('https://hosting-property-clone.herokuapp.com/properties').then(res =>{
@@ -30,7 +24,14 @@ export default class List extends React.Component{
 
     })
     }
+    goToHome(){
+      return(this.props.goToH())
+    }
+    showModal(){
+      this.props.showEditMod()
+    }
     ShowList=()=>{
+     
       this.getList()
      /* var list =this.state.array.services.map()*/
     var jsonData = this.state.array
@@ -52,7 +53,7 @@ export default class List extends React.Component{
          <View style={styles.cardFooter}>
                  <View style={styles.socialBarContainer} > 
                      <View style={styles.socialBarSection} >
-                         <TouchableOpacity onPress={this.showEditModal} style={styles.socialBarButton} >
+                         <TouchableOpacity onpress={this.showModal} style={styles.socialBarButton} >
                              <View>
                                  <Image style={styles.icon} source ={require("../../../images/icons8-edit-64.png")} />
                                  <Text>Edit</Text>
@@ -76,8 +77,8 @@ export default class List extends React.Component{
     );
     });
 
-    if(data.length<1){
-      return(<View style={{justifyContent:"center",flex:1}}><Empty Home={this.goToHome}/></View>)
+    if(data.length<3){
+      return(<View style={{justifyContent:"center",flex:1}}><Empty goTo={this.goToHome}/></View>)
     }
     else{
         return(<ScrollView>
@@ -91,7 +92,10 @@ export default class List extends React.Component{
         return(
 
             <View style = {styles.container}>
-                  {this.ShowList()}
+              <Text onPress={this.props.showEditMod}>Click</Text>
+               {
+                 this.ShowList()
+               }
             </View> 
         );
     }

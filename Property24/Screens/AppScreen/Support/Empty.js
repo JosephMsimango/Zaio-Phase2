@@ -5,7 +5,6 @@ export default class Empty extends React.Component{
     constructor(props){
         super(props);
     }
-
     render(){
 
         return(
@@ -19,7 +18,7 @@ export default class Empty extends React.Component{
                 
                 <View style={{flexDirection:"row",justifyContent:"center",backgroundColor:"rgba(255,255,255,0.3)",borderRadius:10,width:200}}>
                     <Text style={{fontSize:15,color:"#ffffff"}}>{"To create a property click "}</Text>
-                    <TouchableOpacity onPress={this.props.Home()}>
+                    <TouchableOpacity onPress={this.props.goTo()}>
                         <Text style={{fontSize:15,color:"#006bb3"}}>{"here"}</Text>
                     </TouchableOpacity>
                     <Text style={{fontSize:15,color:"#ffffff"}}>{" !"}</Text>
