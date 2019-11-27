@@ -30,12 +30,11 @@ export default class List extends React.Component{
     showModal(){
       this.props.showEditMod()
     }
-    ShowList=()=>{
-     
-      this.getList()
+    ShowList(show){
+    this.getList()
      /* var list =this.state.array.services.map()*/
-    var jsonData = this.state.array
-    var data = jsonData.map(function(item) {
+    let jsonData = this.state.array
+    let data = jsonData.map(function(item) {
       return(
         
         <View>
@@ -44,6 +43,8 @@ export default class List extends React.Component{
              <View>
                       <Text style={styles.Propertyname}>{""+item["name"]}</Text>
                       <Text style={styles.locationText}>{""+item["location"]}</Text>
+                      <TouchableOpacity>
+                      </TouchableOpacity>
               </View>
 
              </View>
@@ -53,7 +54,7 @@ export default class List extends React.Component{
          <View style={styles.cardFooter}>
                  <View style={styles.socialBarContainer} > 
                      <View style={styles.socialBarSection} >
-                         <TouchableOpacity onpress={this.showModal} style={styles.socialBarButton} >
+                         <TouchableOpacity  onPress={show} style={styles.socialBarButton} >
                              <View>
                                  <Image style={styles.icon} source ={require("../../../images/icons8-edit-64.png")} />
                                  <Text>Edit</Text>
@@ -86,15 +87,14 @@ export default class List extends React.Component{
           <View style={{paddingBottom:5}}/>
       </ScrollView>)
       }
-    //console.log(data);
+    //console.log(data); <Text onPress={}>Click</Text>
     }
     render(){
         return(
 
             <View style = {styles.container}>
-              <Text onPress={this.props.showEditMod}>Click</Text>
                {
-                 this.ShowList()
+                 this.ShowList(this.showModal)
                }
             </View> 
         );

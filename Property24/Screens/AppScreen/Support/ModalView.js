@@ -21,7 +21,7 @@ export default class ModalView extends React.Component{
           this.showEditModal=this.showEditModal.bind(this);
           this.goToHome=this.goToHome.bind(this);
         }
-        showEditModal=()=>{
+        showEditModal(){
           this.refs.editModal.open()
         }
         goToHome(){

@@ -27,7 +27,7 @@ export default class Empty extends React.Component{
         );
     }
 }
-
+/**/
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "#455a64",
