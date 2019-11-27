@@ -7,84 +7,86 @@ import {GoogleAutoComplete} from "react-native-google-places-autocomplete";
 import Empty from "./Empty";
 import axios from "axios"
 
-
 export default class List extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            array:[{idNumber:"1",properyName:"House",location:"Sandton,Johannesburg",imageUrl:"https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwjuopi59L7lAhWNHRQKHfHQDLEQjRx6BAgBEAQ&url=https%3A%2F%2Fwww.curbed.com%2F2019%2F8%2F6%2F20756052%2Fdenver-house-for-sale-cherry-creek-north&psig=AOvVaw2vru_UzZn8qy1DRpg8Ivme&ust=1572350563447303",price: "R 105000",}]
+            array:[]
           }
         this.showEditModal=this.showEditModal.bind(this);
         this.goToHome=this.goToHome.bind(this);
     }
     showEditModal=()=>{
-        this.props.showEditModal()
+        this.props.showEditModal
     }
     goToHome(){
       return(this.props.goToHome)
     }
     getList(){
       axios.get('https://hosting-property-clone.herokuapp.com/properties').then(res =>{
-        console.log(res)
+        this.setState({array:res.data})
     })
     .catch(error =>{
-        this.setState({
-            showAlert: true,
-            message:"Account already exists!, Please sign in"
-        });
+
     })
     }
     ShowList=()=>{
-        this.getList()
-        let list =[];
-            for(let i=0;i<0;i++){
-                list.push(
-                    
-                    <View>
-                       <View style={styles.card,{borderColor:"#ffffff",borderLeftWidth:5,borderRightWidth:5,borderTopWidth:5,marginTop: 5,}}>
-                            <View style={styles.cardHeader}>
-                            <View>
-                                    <Text style={styles.Propertyname}>{"House, Apartment"}</Text>
-                <Text style={styles.locationText}>{"23 de Enero,caracas, Capital District, Venezuela"}</Text>
-                                </View>
-            
-                            </View>
-                                <Image style={styles.CardImage}  source ={require("../../../images/395_Detroit_St.25_forprintuse.0.jpg")} />
-                <Text style={styles.priceText}>{"R488800"}</Text>
-                        </View>
-                        <View style={styles.cardFooter}>
-                                <View style={styles.socialBarContainer} > 
-                                    <View style={styles.socialBarSection} >
-                                        <TouchableOpacity onPress={this.showEditModal} style={styles.socialBarButton} >
-                                            <View>
-                                                <Image style={styles.icon} source ={require("../../../images/icons8-edit-64.png")} />
-                                                <Text>Edit</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={styles.socialBarSection}>
-                                        <TouchableOpacity onPress={this.delete} style={styles.socialBarButton}>
-                                            <View>
-                                                <Image style={styles.icon} source ={require("../../../images/icons8-trash-50.png")}/>
-                                                <Text>Delete</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            </View>
-                    </View>
-                    
-                )
-            }
-            //<View style={{justifyContent:"center",flex:1}}><Empty/></View>
-            //<View style={{marginBottom:5}}><ScrollView>{list}</ScrollView></View>
-          if(list.length<1){
-            return(<View style={{justifyContent:"center",flex:1}}><Empty Home={this.goToHome}/></View>)
-          }
-          else{
-            return(<View style={{marginBottom:5}}><ScrollView>{list}</ScrollView></View>)
-          }
-        }
+      this.getList()
+     /* var list =this.state.array.services.map()*/
+    var jsonData = this.state.array
+    var data = jsonData.map(function(item) {
+      return(
+        
+        <View>
+        <View style={styles.card,{borderColor:"#ffffff",borderLeftWidth:5,borderRightWidth:5,borderTopWidth:5,marginTop: 5,}}>
+             <View style={styles.cardHeader}>
+             <View>
+                      <Text style={styles.Propertyname}>{""+item["name"]}</Text>
+                      <Text style={styles.locationText}>{""+item["location"]}</Text>
+              </View>
+
+             </View>
+            <Image style={styles.CardImage}   source={{uri: item["imageUrl"]}} />
+ <Text style={styles.priceText}>{""+item["price"]}</Text>
+         </View>
+         <View style={styles.cardFooter}>
+                 <View style={styles.socialBarContainer} > 
+                     <View style={styles.socialBarSection} >
+                         <TouchableOpacity onPress={this.showEditModal} style={styles.socialBarButton} >
+                             <View>
+                                 <Image style={styles.icon} source ={require("../../../images/icons8-edit-64.png")} />
+                                 <Text>Edit</Text>
+                             </View>
+                         </TouchableOpacity>
+                     </View>
+                     <View style={styles.socialBarSection}>
+                         <TouchableOpacity onPress={this.delete} style={styles.socialBarButton}>
+                             <View>
+                                 <Image style={styles.icon} source ={require("../../../images/icons8-trash-50.png")}/>
+                                 <Text>Delete</Text>
+                             </View>
+                         </TouchableOpacity>
+                     </View>
+                 </View>
+             </View>
+             
+     </View>
+        /*key: item["_id"],
+        address: item["name"]*/
+    );
+    });
+
+    if(data.length<1){
+      return(<View style={{justifyContent:"center",flex:1}}><Empty Home={this.goToHome}/></View>)
+    }
+    else{
+        return(<ScrollView>
+          {data}
+          <View style={{paddingBottom:5}}/>
+      </ScrollView>)
+      }
+    //console.log(data);
+    }
     render(){
         return(
 
@@ -100,8 +102,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#455a64",
         flex: 1,
         marginRight:5,
-        marginLeft:5
-        
+        marginLeft:5,
       },
     button:{
         width:300,

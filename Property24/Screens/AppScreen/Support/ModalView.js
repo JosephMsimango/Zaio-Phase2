@@ -26,7 +26,8 @@ export default class ModalView extends React.Component{
       this.setDrop=this.setDrop.bind(this);
     }
     showEditModal=()=>{
-        return(this.refs.editModal.open());
+        //return(this.refs.editModal.open());
+        alert("clicked")
     } 
     closeModal=()=>{
         return(this.refs.editModal.close());
