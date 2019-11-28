@@ -1,26 +1,42 @@
 import React,{Component} from "react";
 import {Text,Image,StatusBar,Platform,StyleSheet,TextInput,Button,View,TouchableOpacity} from "react-native";
 import {createStackNavigator,StackNavigator} from "react-navigation";
+import axios from "axios";
 import Logo from "../../SupportScreens/Logo";
+
 
 export default class Profile extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            Firstname: "Joseph",
-            Lastname: "Msimango",
-            Email: "Josephmsimango98@gmail.com"
+            Firstname: "",
+            Lastname: "",
+            Email: "",
+            
         }
         this.signout=this.signout.bind(this)
     }
     signout(){
       this.props.navigation.navigate("firstScreen");
-
+    }
+    getInfo(){
+     axios.get('https://hosting-property-clone.herokuapp.com/agents/'+this.props.navigation.state.params.data.agent["_id"]).then(res =>{
+          this.setState({
+              Firstname:res.data["firstName"],
+              Lastname:  res.data["lastName"].split(","),
+              Email:res.data["email"],
+          })
+            })
+            .catch(error =>{
+                console.log(error)
+            })
+     
     }
     render(){
-
-        return(
-
+       // console.log(this.props.navigation.dangerouslyGetParent().getParam('res'))
+       this.getInfo()
+       return(
+            
             <View style = {styles.container}>
               <Logo/>
               <Image style={styles.avatar} source ={require("../../../images/ProfilePic.png")} />
@@ -61,6 +77,8 @@ const styles = StyleSheet.create({
     marginBottom:20,
     width:250,
     borderRadius:30,
+    borderWidth:4,
+    borderColor:"#ffffff",
     backgroundColor: "#00BFFF",
     },
       body:{

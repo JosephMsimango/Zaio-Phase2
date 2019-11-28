@@ -28,7 +28,7 @@ export default class ModalView extends React.Component{
           this.setSearch=this.setSearch.bind(this);
           this.setDrop=this.setDrop.bind(this);
           this.goToHome=this.goToHome.bind(this);
-          this.addressFromSeach=this.addressFromSeach.bind(this);
+          this.setaddress=this.setaddress.bind(this);
           this.propertiesFromDrop=this.propertiesFromDrop.bind(this)
         }
 
@@ -43,7 +43,7 @@ export default class ModalView extends React.Component{
           return(this.props.goToHome)
         }
 
-        addressFromSeach(arg){
+        setaddress(arg){
           console.log(arg)
               this.setState({address:arg})
         }
@@ -83,39 +83,8 @@ export default class ModalView extends React.Component{
           this.getAPIData()
         let mod =(
           <Modal ref={"editModal"} transparent={true} swipeToClose={false} style={{backgroundColor:"#455a64",borderRadius:Platform.OS==="ios" ? 30:0, shadowRadius:10}} backdrop={true} onClosed={()=>{ alert("edited")}}>
-          <Text style={{textAlign:"center", backgroundColor: "#00BFFF",color:"#ffffff"}}>Edit</Text>
-        <ScrollView style={{flex:1,marginBottom:50,marginLeft:10,marginRight:10,borderRightColor:"#ffffff",borderLeftColor:"#ffffff",borderLeftWidth:5,borderRightWidth:5}}> 
-          <View >
-             <ModalSearch setSearch={this.setSearch} addressFromSeach={this.addressFromSeach}/>
-          </View> 
-          <View style={{marginTop:5,marginBottom:5}}>
-          <ModalDropdown setDrop={this.setDrop}/>
-          </View>
-          <Image style={styles.CardImage}  source ={require("../../../images/395_Detroit_St.25_forprintuse.0.jpg")} />
-          <View style={{marginLeft:10,marginRight:10,alignItems:"center",marginTop:20}}>
-                  <Text style={{color:"white",fontSize:20}}>Price: R {this.state.sliderValue}</Text>
-                  <Slider style={styles.sliderBar} minimumValue={0} maximumValue={1000000} step={100} value={this.state.sliderValue} onValueChange={(sliderValue)=>this.setState({sliderValue})} minimumTrackTintColor="#FFFFFF" maximumTrackTintColor="#000000"/>					
-          </View>
-          <View style={{marginBottom:20,alignItems:"center"}}>
-          <TouchableOpacity  style={styles.button}>
-              <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
-          </ScrollView>
-            <View style={styles.footer}>
-             <View style={{justifyContent:"center",}}> 
-                <TouchableOpacity onPress={this.closeModal} >
-                  <Image style={styles.icon}  source ={require("../../../images/icons8-close-window-50.png")} />
-                  <Text>Close</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={{justifyContent:"center"}}>
-                <TouchableOpacity  style={{justifyContent:"center"}}>
-                  <Image style={styles.icon} source ={require("../../../images/icons8-trash-50.png")}/>
-                  <Text>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+         
+          
           </Modal>
         )
         return(

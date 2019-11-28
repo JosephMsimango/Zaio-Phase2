@@ -29,7 +29,6 @@ export default class SignInPage extends React.Component{
         color:"#455a64" 
     }
     this.signin=this.signin.bind(this); 
-    this.getEmailfromURL=this.getEmailfromURL.bind(this)
     }
     showAlert = () => {
         this.setState({
@@ -42,50 +41,8 @@ export default class SignInPage extends React.Component{
           showAlert: false
         });
       };
-    getEmailfromURL(){
+   
 
-       /* let collection={}
-        collection.email=this.state.email,
-        collection.password=this.state.password,
-        console.warn(collection)
-
-        var url = "https://hosting-property-clone.herokuapp.com/agents/authentication"
-
-        fetch(url,{
-            method: "POST",
-            body: JSON.stringify(collection),
-            headers: new Headers({
-                "Content-Type": "application/json"
-            })
-        }).then(res => res.json())
-        */
-        axios.post("https://hosting-property-clone.herokuapp.com/agents/authentication", {
-            email: this.state.email,
-            password: this.state.password
-        }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-        })
-        .then((response) => {
-            console.log("reactNativeDemo","response get details:"+response.data);
-         })
-         .catch((error) => {
-            console.log("axios error:",error);
-         });
-        /*axios.post("https://hosting-property-clone.herokuapp.com/agents/authentication",{
-            email: this.state.email,
-            password: this.state.password
-        }).then(response => {
-            console.log(response.data);
-        }).catch(error =>{
-            console.log(error);
-        })*/
-    }
-
-    getInputEmail=(typeTxt)=>{
-        this.setState({email:typeTxt})
-    }
     PasswordCheck(text){
         if(text==""){
             this.setState({
@@ -116,7 +73,6 @@ export default class SignInPage extends React.Component{
     this.setState({password:text})
     }
     validate = (text) => {
-        console.log(text);
         let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
         if(reg.test(text) === false)
         {
@@ -200,8 +156,10 @@ export default class SignInPage extends React.Component{
                 email: this.state.email,
                 password: this.state.password
                 }).then(res =>{
-                   //console.log(res.data.agent["firstName"]);
+                    //this.props.navigation.navigate("Saved",res);
+                    this.props.navigation.navigate("Profile",res);
                     this.props.navigation.navigate("Home",res);
+                    
                 })
                 .catch(error =>{
                     this.setState({

@@ -7,51 +7,98 @@ import { Searchbar } from "react-native-paper";
 The component is child component for location search 
 the selected location can be stored in state variable
 */
+const items=[
+  {name: "House",
+  id:"House"},
+  {name: "Apartment",
+  id:"Apartment"},
+  {name: "Townhouse",
+  id:"Townhouse"},
+  {name: "Vacant Land",
+  id:"Vacant Land"},
+  {name: "Farm",
+  id:"Farm"},
+  {name: "Commercial",
+  id:"Commercial"},
+  {name:  "Industrial",
+  id:"Industrial"}
+]
 export default class Search extends React.Component {
   constructor(props) {
     super(props);
     this.state={
-      searchResult: ""
+      searchResult: "",
+      address:null,
+      lat:null,
+      lng:null,
+        selectedItems: [],
+
     }
   }
- 
+  onSelectedItemsChange = (selectedItems) => {
+    this.setState({ selectedItems });
+    this.props.setproperties(selectedItems);
+    
+  };
+  getAdd(data){
+    //console.log("add",data);
+    this.setState(
+        {
+          address: data.formatted_address, // selected address
+          lat: data.geometry.location.lat,//  selected coordinates latitude
+          lng:data.geometry.location.lng, //  selected coordinates longitute
+
+        }
+      );
+}
   render() {
     return (
       <View >
-        <GooglePlacesAutocomplete
-          placeholder="Add Address..."
-          minLength={2} // minimum length of text to search
-          autoFocus={false}
-          returnKeyType={"search"}
-          listViewDisplayed="false"
-          fetchDetails={true}
-          renderDescription={row =>
-            row.description || row.formatted_address || row.name
-          }
-          onPress={(data, details = null) => {
-            this.props.setaddress(data.description)
-           // this.setState({searchResult:data.description})
-          }}
-          getDefaultValue={() => {
-            return ""; // text input default value
-          }}
-          query={{
-            key: "AIzaSyBnghjKCGZfylLUWssl8SQbM8ILGeYW5l0",
-            language: "en", // language of the results
-            types: "(regions)" // default: 'geocode'
-          }}
-          styles={{
-            description: {
-              fontWeight: "bold"
-            },
-            backgroundColor: 'gray',
-            predefinedPlacesDescription: {
-              color: "#1faadb"
-            },
-          }}
-          
-          debounce={200}
-        />
+          <GooglePlacesAutocomplete
+    placeholder='Search'
+    minLength={2} // minimum length of text to search
+    autoFocus={false}
+    fetchDetails={true}
+    returnKeyType={'default'}
+    onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+
+      var data = details;
+      this.getAdd(data);
+    }}
+    query={{
+      // available options: https://developers.google.com/places/web-service/autocomplete
+      key: 'AIzaSyBnghjKCGZfylLUWssl8SQbM8ILGeYW5l0',
+      language: 'en',
+      types: 'geocode', // default: 'geocode'
+    }}
+
+    listViewDisplayed={this.state.showPlacesList}
+    textInputProps={{
+      onFocus: () => this.setState({ showPlacesList: true }),
+      onBlur: () => this.setState({ showPlacesList: false }),
+    }}
+    styles={{
+        textInputContainer: {
+          width: '100%'
+        },
+        description: {
+          fontWeight: 'bold'
+        },
+        predefinedPlacesDescription: {
+          color: '#1faadb'
+        }
+      }}
+
+    currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
+    currentLocationLabel="Current location"
+    nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+
+    filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+    // predefinedPlaces={[]}
+
+    predefinedPlacesAlwaysVisible={true}
+  />
+       
       </View>
     );
   }

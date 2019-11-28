@@ -20,6 +20,7 @@
     "history": "^4.10.1",
     "indicative": "^7.2.1",
     "location-picker": "^1.1.1",
+    "native-base": "^2.13.8",
     "navigate": "^0.3.6",
     "permissions": "^0.1.0",
     "picker": "^0.1.4",

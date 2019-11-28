@@ -15,13 +15,13 @@ export default class ModalSearch extends React.Component {
       defaultVal:""
     }
   }
-  string(){
-    return( this.props.setSearch()+"")
+
+  sendBack(data){
+    this.props.setaddress(data)
   }
   render() {
-    return (
-      <View >
-        <GooglePlacesAutocomplete
+    let mod = (
+      <GooglePlacesAutocomplete
           placeholder="Add Address..."
           minLength={2} // minimum length of text to search
           autoFocus={false}
@@ -32,12 +32,11 @@ export default class ModalSearch extends React.Component {
             row.description || row.formatted_address || row.name
           }
           onPress={(data, details = null) => {
-            console.log(data.description)
-            this.props.addressFromSeach(data.description)
-           // this.setState({searchResult:data.description})
+           this.sendBack(data.description)
+           this.setState({searchResult:data.description})
           }}
           getDefaultValue={() => {
-            return this.string(); // text input default value
+            return ""; // text input default value
           }}
           query={{
             key: "AIzaSyBnghjKCGZfylLUWssl8SQbM8ILGeYW5l0",
@@ -56,6 +55,10 @@ export default class ModalSearch extends React.Component {
           
           debounce={200}
         />
+    )
+    return (
+      <View >
+        {mod}
       </View>
     );
   }
