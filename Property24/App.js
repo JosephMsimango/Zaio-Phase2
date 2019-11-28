@@ -8,7 +8,7 @@ import SignUpPage from "./Screens/StartScreen/Support/SignUpPage";
 import Empty from "./Screens/AppScreen/Support/Empty";
 import List from "./Screens/AppScreen/Support/List";
 import Search from "./Screens/AppScreen/Support/Search";
-import ModalView from "./Screens/AppScreen/Support/ModalView";
+import ModalView from "./Screens/AppScreen/Support/List";
 import ModalSearch from "./Screens/AppScreen/Support/ModalSearch";
 import ModalDropdown from "./Screens/AppScreen/Support/ModalDropdown";
 import Dropdown from "./Screens/AppScreen/Support/Dropdown";
@@ -31,58 +31,9 @@ const StartStack = createStackNavigator(
         }
       })
 const ExtraScreens = createStackNavigator({
-  EmptyScreen:
-        {
-          screen:Empty,
-          navigationOptions:{
-            header:null
-          }
-        },
-  ListScreen:
+  List:
         {
           screen:List,
-          navigationOptions:{
-            header:null
-          }
-        },
-    SearchScreen:
-        {
-          screen:Search,
-          navigationOptions:{
-            header:null
-          }
-        },
-    ModalViewScreen:
-        {
-          screen:ModalView,
-          navigationOptions:{
-            header:null
-          }
-        },
-    ModalSearchScreen:
-        {
-          screen:ModalSearch,
-          navigationOptions:{
-            header:null
-          }
-        },
-    ModalDropdownScreen:
-        {
-          screen:ModalDropdown,
-          navigationOptions:{
-            header:null
-          }
-        },
-    DropdownScreen:
-        {
-          screen:Dropdown,
-          navigationOptions:{
-            header:null
-          }
-        },
-    AddImageScreen:
-        {
-          screen:AddImage,
           navigationOptions:{
             header:null
           }

@@ -98,7 +98,8 @@ save=()=>{
                     }
                 
                 }).then(res =>{
-                    this.props.navigation.navigate("Saved");
+                    //this.props.navigation.navigate("ModalView",{agentName:this.state.agent});
+                    this.props.navigation.navigate("Saved",{agentName:this.state.agent+""});
                 })
                 .catch(error =>{
                     console.log(error)

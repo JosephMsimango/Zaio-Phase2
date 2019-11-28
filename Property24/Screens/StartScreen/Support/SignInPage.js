@@ -156,8 +156,9 @@ export default class SignInPage extends React.Component{
                 email: this.state.email,
                 password: this.state.password
                 }).then(res =>{
-                    //this.props.navigation.navigate("Saved",res);
+                   
                     this.props.navigation.navigate("Profile",res);
+                    this.props.navigation.navigate("Saved",res);
                     this.props.navigation.navigate("Home",res);
                     
                 })

@@ -17,9 +17,11 @@ export default class List extends React.Component{
         this.goToHome=this.goToHome.bind(this)
         this.showModal=this.showModal.bind(this)
         this.setPropId=this.setPropId.bind(this)
+        this.getList=this.getList.bind(this)
     }
     getList(){
-      axios.get('https://hosting-property-clone.herokuapp.com/properties').then(res =>{
+      axios.get('https://hosting-property-clone.herokuapp.com/properties/search/Joseph').then(res =>{
+      
         this.setState({array:res.data})
     })
     .catch(error =>{
@@ -27,7 +29,7 @@ export default class List extends React.Component{
     })
     }
     goToHome(){
-      return(this.props.goToH())
+     return(this.props.goToH())
     }
     showModal(){
       this.props.showEditMod(this.state.id)

@@ -9,11 +9,6 @@ import Profile from "../Support/Profile";
 import Home from "../Support/Home"
 import Save from "../Support/Save";
 
-class SignInPage extends React.Component{
-  render(){
-   console.log(this.props.navigation.state)
-  }
-}
 Tabnavigator = createBottomTabNavigator({
 
     Home:{  

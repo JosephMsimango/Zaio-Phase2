@@ -12,7 +12,6 @@ import ModalSearch from "./ModalSearch";
 import List from "./List";
 import axios from "axios"
 
-
 export default class ModalView extends React.Component{
         constructor(props){
           super(props);
@@ -29,9 +28,13 @@ export default class ModalView extends React.Component{
           this.setDrop=this.setDrop.bind(this);
           this.goToHome=this.goToHome.bind(this);
           this.setaddress=this.setaddress.bind(this);
+          this.getAPIData=this.getAPIData.bind(this);
+          this.agentName=this.agentName.bind(this);
           this.propertiesFromDrop=this.propertiesFromDrop.bind(this)
         }
-
+        agentName(){
+          return(this.props.passData)
+        }
         showEditModal(idProp){
             this.setState({id:idProp+""})
             this.refs.editModal.open();
@@ -93,7 +96,7 @@ export default class ModalView extends React.Component{
             {
               mod
             }
-          <List showEditMod={this.showEditModal} goToH={this.goToHome}/> 
+          <List showEditMod={this.showEditModal} goToH={this.goToHome} agentName={this.agentName}/> 
         </View>   
             );
     }

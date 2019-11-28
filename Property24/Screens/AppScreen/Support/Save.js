@@ -2,6 +2,7 @@ import React,{Component} from "react";
 import {Text,StatusBar,Dimensions,Image,Platform,StyleSheet,TextInput,Button,View,TouchableOpacity} from "react-native";
 import {createStackNavigator,StackNavigator} from "react-navigation";
 import Logo from "../../SupportScreens/Logo";
+import Modal from "react-native-modalbox";
 import ModalView from "./ModalView";
 import List from "./List";
 import AddImage from "./AddImage";
@@ -29,20 +30,32 @@ export default class Saved extends React.Component{
     goToHome(){
         this.props.navigation.navigate("Home")
     }
+    
+        
+    
     render(){
         /*<List goToHome={this.goToHome}/>*/
+        console.log(this.props.navigation.state.params.data)
+        let Modal =(
+            <Modal ref={"editModal"} transparent={true} swipeToClose={false} style={{backgroundColor:"#455a64",borderRadius:Platform.OS==="ios" ? 30:0, shadowRadius:10}} backdrop={true} onClosed={()=>{ alert("edited")}}>
+         
+          
+            </Modal>
+            )
         return(
-
+            
             <View style = {styles.container}>
                 <TouchableOpacity onPress={this.goToHome}>
                 <Logo/>
                 </TouchableOpacity>
-                <ModalView goToHome={this.goToHome}/>
+               {
+                   Modal
+               }
             </View>
         );
     }
 }
-
+// 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "#455a64",
