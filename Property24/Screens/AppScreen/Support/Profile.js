@@ -15,6 +15,7 @@ export default class Profile extends React.Component{
             
         }
         this.signout=this.signout.bind(this)
+        this.getInfo=this.getInfo.bind(this)
     }
     signout(){
       this.props.navigation.navigate("firstScreen");
@@ -23,7 +24,7 @@ export default class Profile extends React.Component{
      axios.get('https://hosting-property-clone.herokuapp.com/agents/'+this.props.navigation.state.params.data.agent["_id"]).then(res =>{
           this.setState({
               Firstname:res.data["firstName"],
-              Lastname:  res.data["lastName"].split(","),
+              Lastname:  res.data["lastName"],
               Email:res.data["email"],
           })
             })

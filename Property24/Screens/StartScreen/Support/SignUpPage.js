@@ -203,7 +203,8 @@ export default class SignUpPage extends React.Component{
                     });
                 }
                 else{
-                    axios.post('https://hosting-property-clone.herokuapp.com/Customers', {
+                    
+                    axios.post('https://hosting-property-clone.herokuapp.com/agents', {
                         "firstName": this.state.firstname,
                         "lastName": this.state.lastname,
                         "email": this.state.email,
@@ -215,12 +216,14 @@ export default class SignUpPage extends React.Component{
                         }
                     
                     }).then(res =>{
+                        this.props.navigation.navigate("Profile",res);
+                    this.props.navigation.navigate("Saved",res);
                         this.props.navigation.navigate("Home",res);
                     })
                     .catch(error =>{
                         this.setState({
                             showAlert: true,
-                            message:"Account already exists!, Please sign in"
+                            message:"Account already exists!, Please sign in!"
                         });
                     })
                     }
