@@ -29,7 +29,7 @@ export default class List extends React.Component{
     })
     }
     goToHome(){
-     return(this.props.goToH())
+     //return(this.props.goToH())
     }
     showModal(){
       this.props.showEditMod(this.state.id)
@@ -97,7 +97,9 @@ export default class List extends React.Component{
       }
     //console.log(data); <Text onPress={}>Click</Text>
     }
+    
     render(){
+      console.log(this.props.agentNameMethod)
         return(
 
             <View style = {styles.container}>

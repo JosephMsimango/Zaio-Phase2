@@ -44,6 +44,7 @@
     "react-native-material-dropdown": "^0.11.1",
     "react-native-modal-dropdown": "^0.7.0",
     "react-native-modalbox": "^2.0.0",
+    "react-native-modals": "^0.19.9",
     "react-native-multiple-select": "^0.5.3",
     "react-native-paper": "^2.16.0",
     "react-native-permissions": "^2.0.3",

@@ -13,6 +13,7 @@ import ModalSearch from "./Screens/AppScreen/Support/ModalSearch";
 import ModalDropdown from "./Screens/AppScreen/Support/ModalDropdown";
 import Dropdown from "./Screens/AppScreen/Support/Dropdown";
 import AddImage from "./Screens/AppScreen/Support/AddImage"
+import Edit from "./Screens/AppScreen/Support/Edit";
 
 const StartStack = createStackNavigator(
     {Signin:
@@ -31,9 +32,9 @@ const StartStack = createStackNavigator(
         }
       })
 const ExtraScreens = createStackNavigator({
-  List:
+  Edit:
         {
-          screen:List,
+          screen:Edit,
           navigationOptions:{
             header:null
           }

@@ -29,12 +29,9 @@ export default class ModalView extends React.Component{
           this.goToHome=this.goToHome.bind(this);
           this.setaddress=this.setaddress.bind(this);
           this.getAPIData=this.getAPIData.bind(this);
-          this.agentName=this.agentName.bind(this);
           this.propertiesFromDrop=this.propertiesFromDrop.bind(this)
         }
-        agentName(){
-          return(this.props.passData)
-        }
+        sendName
         showEditModal(idProp){
             this.setState({id:idProp+""})
             this.refs.editModal.open();
@@ -55,6 +52,7 @@ export default class ModalView extends React.Component{
               this.setState({properties:arg})
         }
         getAPIData(){
+          console.log(navigation.getParam("agentName"))
           axios.get('https://hosting-property-clone.herokuapp.com/properties/5ddef545fc7a730004f3dd08').then(res =>{
             let p =res.data["price"]
             let pr =parseInt(p.replace("R ",""))
@@ -96,7 +94,7 @@ export default class ModalView extends React.Component{
             {
               mod
             }
-          <List showEditMod={this.showEditModal} goToH={this.goToHome} agentName={this.agentName}/> 
+          <List showEditMod={this.showEditModal} goToH={this.goToHome}/> 
         </View>   
             );
     }
