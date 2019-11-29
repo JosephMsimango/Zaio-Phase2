@@ -182,16 +182,17 @@ export default class SignInPage extends React.Component{
                             <Text style={[styles.feedback, this.state.feedStyle]}>{this.state.feedback}</Text>
                         <View style={styles.inputBox}>
                             <Image style={styles.icon}  source ={require("../../../images/icons8-mail-account-32.png")} />
-                            <TextInput style={[styles.textIn,this.state.customstyles]} onChangeText={(text)=> this.validate(text)} value={this.state.email} underlineColorAndroid = "rgba(0,0,0,0)" placeholder ="Email" placeholderTextColor = "#ffffff"/>
+                            <TextInput style={[styles.textIn,this.state.customstyles,{width:230}]} onChangeText={(text)=> this.validate(text)} value={this.state.email} underlineColorAndroid = "rgba(0,0,0,0)" placeholder ="Email" placeholderTextColor = "#ffffff"/>
                         </View>
                             <Text style={[styles.pass, this.state.passWordStyle]}>{this.state.PassMessage}</Text>
                         <View style={styles.inputBox}>
                             <Image style={styles.icon}  source ={require("../../../images/icons8-key-64.png")} />
-                            <TextInput style={styles.textIn} onChangeText={(text)=> this.PasswordCheck(text)} value={this.state.password}  secureTextEntry={true} underlineColorAndroid = "rgba(0,0,0,0)" placeholder ="Password" placeholderTextColor = "#ffffff"/>
+                            <TextInput style={styles.textIn,{color:"#ffffff",width:220}} onChangeText={(text)=> this.PasswordCheck(text)} value={this.state.password}  secureTextEntry={true} underlineColorAndroid = "rgba(0,0,0,0)" placeholder ="Password" placeholderTextColor = "#ffffff"/>
                         </View>
                         <TouchableOpacity onPress={this.signin} style= {styles.button}>
                             <Text style={styles.buttonText}>Sign in</Text>
                         </TouchableOpacity>
+                        
                     </ScrollView>
                 <View style = {styles.signupTextCont}>            
                     <Text>
@@ -240,6 +241,7 @@ const styles = StyleSheet.create({
     },
     textIn:{
         color:"#ffffff",
+        
     },
     icon: {
         width:25,

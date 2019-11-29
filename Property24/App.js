@@ -39,6 +39,13 @@ const ExtraScreens = createStackNavigator({
             header:null
           }
         },
+  Empty:
+        {
+          screen:Empty,
+          navigationOptions:{
+            header:null
+          }
+        },
 })
 
 const AppStack = createStackNavigator(

@@ -128,7 +128,7 @@ let dropDown =(
                     showRemoveAll={true}
                     hideSearch={true}
                     onSelectedItemsChange={this.onSelectedItemsChange}
-                    selectedItems={this.state.selectedItems}
+                    selectedItems={this.state.properties}
                     colors={{selectToggleTextColor:"#B0B0B0"}}
                     />
                 </View>
@@ -193,7 +193,7 @@ let SearchBar = (
                 </TouchableOpacity>
                 <View style={{marginLeft:10,marginRight:10,alignItems:"center",marginTop:20}}>
                         <Text style={{color:"white",fontSize:20}}>Price: R {this.state.price}</Text>
-                        <Slider style={styles.sliderBar} minimumValue={0} maximumValue={1000000} step={100} value={this.state.price} onValueChange={(price)=>this.setState({price})} minimumTrackTintColor="#FFFFFF" maximumTrackTintColor="#000000"/>					
+                        <Slider style={styles.sliderBar} minimumValue={250000} maximumValue={20000000} step={10000} value={this.state.price} onValueChange={(price)=>this.setState({price})} minimumTrackTintColor="#FFFFFF" maximumTrackTintColor="#000000"/>					
                 </View>
 
                  <View style={{alignItems:"center"}}>

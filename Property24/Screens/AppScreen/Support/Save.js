@@ -4,7 +4,7 @@ import {createStackNavigator,StackNavigator} from "react-navigation";
 import Logo from "../../SupportScreens/Logo";
 import List from "./List";
 import AddImage from "./AddImage";
-import AwesomeAlert from 'react-native-awesome-alerts';
+
 import Empty from "./Empty";
 import axios from "axios";
 import Modal from "react-native-modalbox";
@@ -31,123 +31,51 @@ export default class Saved extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            agenName:this.props.navigation.state.params.data.agent["firstName"],
+          agenName:this.props.navigation.state.params.data.agent["firstName"]+" "+this.props.navigation.state.params.data.agent["lastName"],
             array:[],
             id:"",
             Modalproperties: [],
             modalAddress:"",
             ModalimageUrl: "",
             Modalprice: 0,
-            title:"",
-            message:"",
+            token: this.props.navigation.state.params.data.token,
+
             showAlert:false,
-            showCancelButton:false,
+            message:"",
+            showCancelButton:null,
+            showConfirmButton:null,
+            cancelText:"",
             confirmText:"",
-            cancelText:""
+            val:false
 
         }
         this.showEditModal=this.showEditModal.bind(this);
         this.method=this.method.bind(this)
-        this.delete=this.delete.bind(this)
-    }
-    method(){
-    this.state.modalAddress
-    }
-     showEditModal=(arg)=>{
-       
-        axios.get('https://hosting-property-clone.herokuapp.com/properties/'+arg).then(res =>{
-          console.log(res)
-          var prop = res.data["name"].split(",")
-                if(prop.length==1){
-                    prop[0]=prop[0].replace(",","")
-                }
-                var pri = res.data["price"]
-
-                pri=parseInt(pri.replace("R ",""))
-                this.setState({
-                        response:res,
-                        id: res.data["_id"],
-                        agent: res.data["agent"],
-                        Modalproperties: prop,
-                        modalAddress:res.data["location"],
-                        ModalimageUrl: res.data["imageUrl"],
-                        Modalprice: pri
-                })
-          this.setState({
-              
-              
-            })
-      })
-      this.refs.editModal.open();
-      
-//console.log(arg)
-        // this.props.navigation.navigate("Edit",{agent:arg});
+        this.delete=this.delete.bind(this),
+        this.save=this.save.bind(this)
+        this.goToHome=this.goToHome.bind(this)
       }
-    save(){
-        console.log("yey")
-      }
-    onSelectedItemsChange = (selectedItems) => {
-        this.setState({ modalAddress:selectedItems });    
-        };
-    closeModal=()=>{
-      this.refs.editModal.close();
-    }
-    getList(){
-      axios.get('https://hosting-property-clone.herokuapp.com/properties/search/'+this.state.agenName).then(res =>{
-      
-        this.setState({array:res.data})
-    })
-  }
-    delete(){
-  
-      this.setState({
-        title:"Alert",
-        message:"Are you sure! you want to delete this property?",
-        showAlert:true,
-        showCancelButton:true,
-        confirmText:"Yes! I'm sure",
-        cancelText:"No, Don't Delete!"
-      })
-    }
-    onDeleteCheck(arg){
-      if(arg=="Yes! I'm sure"){
-        this.deleteFromDB()
-      }else{
+delete(){
         
-      }
-    }
-    deleteFromDB(){
-      this.setState({
-        showAlert: true,
-        message:"Something went, Couldn't Delete Property!",
-        showCancelButton:false,
-        confirmText:"Okay"
-    });
-      this.closeModal()
-      /*axios.post('https://hosting-property-clone.herokuapp.com/properties/'+this.state.id).then(res =>{
-        this.setState({
-          showAlert: true,
-          message:"Something went, Couldn't Delete Property!",
-          showCancelButton:false,
-          confirmText:"Okay"
-      });
-    })
-    .catch(error =>{
-        this.setState({
-            showAlert: true,
-            message:"Property Deleted!",
-            showCancelButton:false,
-            confirmText:"Okay"
+          /*axios.delete('https://hosting-property-clone.herokuapp.com/properties/'+this.state.id
+      ).then(res =>{
+        
+      })
+      .catch(error =>{
+       
+      })*/
+        
 
-        });
-        this.closeModal()
+      
+}
 
-
-    })*/
-    }
-    ShowList(show,deleteFun){
+goToHome(){
+  this.props.navigation.navigate("Home")
+}
+ShowList(show,deleteFun){
         this.getList()
          /* var list =this.state.array.services.map()*/
+         
         let jsonData = this.state.array
         let data = jsonData.map(function(item) {
           return(
@@ -193,7 +121,7 @@ export default class Saved extends React.Component{
         });
     
         if(data.length<1){
-          return(<View style={{justifyContent:"center",flex:1}}><Empty/></View>)
+          return(<View style={{justifyContent:"center",flex:1}}><Empty goToHome={this.goToHome}/></View>)
         }
         else{
             return(<ScrollView>
@@ -203,37 +131,107 @@ export default class Saved extends React.Component{
           }
         //console.log(data); <Text onPress={}>Click</Text>
         }
+        method(){
+          this.state.modalAddress
+          }
+          showEditModal=(arg)=>{
+            
+            axios.get('https://hosting-property-clone.herokuapp.com/properties/'+arg).then(res =>{
+              console.log(res)
+              var prop = res.data["name"].split(",")
+                    if(prop.length==1){
+                        prop[0]=prop[0].replace(",","")
+                    }
+                    var pri = res.data["price"]
+    
+                    pri=parseInt(pri.replace("R ",""))
+                    this.setState({
+                            response:res,
+                            id: res.data["_id"],
+                            agent: res.data["agent"],
+                            Modalproperties: prop,
+                            modalAddress:res.data["location"],
+                            ModalimageUrl: res.data["imageUrl"],
+                            Modalprice:pri
+                    })
+              this.setState({
+                  
+                  
+                })
+          })
+          this.refs.editModal.open();
+          
+    //console.log(arg)
+            // this.props.navigation.navigate("Edit",{agent:arg});
+          }
+    save(){
+      this.closeModal
+      axios.put('https://hosting-property-clone.herokuapp.com/properties/'+this.state.id,{
+
+                    "agent": this.state.agenName,
+                    "name": this.state.Modalproperties+"",
+                    "location": this.state.modalAddress,
+                    "imageUrl": this.state.ModalimageUrl,
+                    "price": "R "+this.state.Modalprice
+                },{
+                    "headers": {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                    Authorization:"Bearer "+this.state.token
+                    }
+                
+                }).then(res =>{
+                  this.closeModal()
+                })
+                .catch(error =>{
+                    console.log(error)
+                   
+                })
+    }
+    onSelectedItemsChange = (selectedItems) => {
+            this.setState({ modalAddress:selectedItems });    
+            };
+    closeModal=()=>{
+          this.refs.editModal.close();
+        }
+    getList(){
+         
+          axios.get('https://hosting-property-clone.herokuapp.com/properties/search/'+this.state.agenName).then(res =>{
+          
+            this.setState({array:res.data})
+        })
+      }
     render(){
-      let dropDown =(
-        <View style={{backgroundColor:"#bcbcbc",borderColor:"#E0E0E0",borderWidth:1}}>
-                <View style={{borderWidth:7,borderColor:"#E0E0E0",backgroundColor:"#E0E0E0"}}>
-                    <View style={{borderRadius:10,borderWidth:1,backgroundColor:"#ffffff",borderColor:"#ffffff"}}>
-                        <SectionedMultiSelect
-                        items={items}
-                        uniqueKey="id"
-                        selectText="Select Property type\name"
-                        showDropDowns={true}
-                        showCancelButton={true}
-                        showRemoveAll={true}
-                        hideSearch={true}
-                        onSelectedItemsChange={this.onSelectedItemsChange}
-                        selectedItems={this.state.Modalproperties}
-                        colors={{selectToggleTextColor:"#B0B0B0"}}
-                        />
-                    </View>
-                </View>
-            </View>
-        )
-        return(
+     /* <Text onPress={()=>{return(this.showAlert("Do you want to delete?",true,true,"Yes! I'm sure","No, don't delete!","Alert"))}}>Clicked</Text>*/
+     let dropDown =(
+      <View style={{backgroundColor:"#bcbcbc",borderColor:"#E0E0E0",borderWidth:1}}>
+              <View style={{borderWidth:7,borderColor:"#E0E0E0",backgroundColor:"#E0E0E0"}}>
+                  <View style={{borderRadius:10,borderWidth:1,backgroundColor:"#ffffff",borderColor:"#ffffff"}}>
+                      <SectionedMultiSelect
+                      items={items}
+                      uniqueKey="id"
+                      selectText="Select Property type\name"
+                      showDropDowns={true}
+                      showCancelButton={true}
+                      showRemoveAll={true}
+                      hideSearch={true}
+                      onSelectedItemsChange={this.onSelectedItemsChange}
+                      selectedItems={this.state.Modalproperties}
+                      colors={{selectToggleTextColor:"#B0B0B0"}}
+                      />
+                  </View>
+              </View>
+          </View>
+      ) 
+    
+     return(
             <View style={styles.container}>
-                 <TouchableOpacity>
                 <Logo/>
-                </TouchableOpacity>
                 {
                  this.ShowList(this.showEditModal,this.delete)
                 }
-                <Modal ref={"editModal"} transparent={true} swipeToClose={false} style={{backgroundColor:"#455a64",borderRadius:Platform.OS==="ios" ? 30:0, shadowRadius:10}} backdrop={true} onClosed={()=>{ alert("edited")}}>
+                <Modal ref={"editModal"} transparent={true} swipeToClose={false} style={{backgroundColor:"#455a64",borderRadius:Platform.OS==="ios" ? 30:0, shadowRadius:10}} backdrop={true}>
                   <Logo/>
+                  
                   <Text style={{textAlign:"center", backgroundColor: "#00BFFF",color:"#ffffff"}}>Edit</Text>
                   <View style={{flex:1,marginLeft:5,marginRight:5}}> 
                     <ScrollView>
@@ -244,7 +242,7 @@ export default class Saved extends React.Component{
                             </View>
                                 <View style={{marginLeft:10,marginRight:10,alignItems:"center",marginTop:20}}>
                                         <Text style={{color:"white",fontSize:20}}>Price: R {this.state.Modalprice}</Text>
-                                        <Slider style={styles.sliderBar} minimumValue={0} maximumValue={1000000} step={100} value={this.state.Modalprice} onValueChange={(price)=>this.setState({price})} minimumTrackTintColor="#FFFFFF" maximumTrackTintColor="#000000"/>					
+                                        <Slider style={styles.sliderBar} minimumValue={250000} maximumValue={2000000} step={10000} value={this.state.Modalprice} onValueChange={(Modalprice)=>this.setState({Modalprice})} minimumTrackTintColor="#FFFFFF" maximumTrackTintColor="#000000"/>					
                                 </View>
 
                                 <View style={{alignItems:"center"}}>
@@ -275,27 +273,6 @@ export default class Saved extends React.Component{
                                 </View>
                             </View>  
                 </Modal>
-                <View style={{position:"absolute",height: Dimensions.get('window').height,width: Dimensions.get('window').width}}>
-                            <AwesomeAlert
-                                show={this.state.showAlert}
-                                showProgress={false}
-                                title={this.state.title}
-                                message={this.state.message}
-                                closeOnTouchOutside={true}
-                                closeOnHardwareBackPress={false}
-                                showCancelButton={this.state.showCancelButton}
-                                showConfirmButton={true}
-                                cancelText={this.state.cancelText}
-                                confirmText={this.state.confirmText}
-                                confirmButtonColor="#DD6B55"
-                                onCancelPressed={() => {
-                                    this.hideAlert();
-                                }}
-                                onConfirmPressed={() => {
-                                  this.onDeleteCheck(this.state.confirmText)
-                                }}
-                                />
-            </View>    
             </View>
         )
     }
