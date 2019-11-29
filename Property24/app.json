@@ -4,6 +4,11 @@
     "slug": "Property24",
     "privacy": "public",
     "sdkVersion": "35.0.0",
+    "android":{
+        "package": "com.lingonsaft.Property24",
+        "versionCode":1,
+        "icon":"./assets/icon.png"
+    },
     "platforms": [
       "ios",
       "android",

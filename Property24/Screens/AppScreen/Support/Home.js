@@ -43,6 +43,7 @@ export default class Home extends Component {
             token:this.props.navigation.state.params.data.token,
             message:""
             }
+            this.Image=this.Image.bind(this)
         }
 showAlert = () => {
             this.setState({
@@ -120,6 +121,12 @@ save=()=>{
 onSelectedItemsChange = (selectedItems) => {
     this.setState({ properties:selectedItems });    
   };
+  Image(){
+    this.setState({
+      showAlert: true,
+      message:"This feature doesn't exist at the moment, please continue!"
+  });
+  }
 render(){
 let dropDown =(
     <View style={{backgroundColor:"#bcbcbc",borderColor:"#E0E0E0",borderWidth:1}}>
@@ -194,7 +201,7 @@ let SearchBar = (
                 <View  style={{marginTop:5,marginBottom:5}}>
                     {dropDown} 
                 </View>
-                <TouchableOpacity onPress={this.openCamera}>
+                <TouchableOpacity onPress={this.Image}>
                         <Image style={{borderWidth:10,borderColor:"#E0E0E0",width:null,height: 210}} source ={require("../../../images/image.png")}/>
                 </TouchableOpacity>
                 <View style={{marginLeft:10,marginRight:10,alignItems:"center",marginTop:20}}>

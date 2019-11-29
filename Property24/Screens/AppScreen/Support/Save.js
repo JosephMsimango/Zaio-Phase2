@@ -54,6 +54,7 @@ export default class Saved extends React.Component{
         this.delete=this.delete.bind(this),
         this.save=this.save.bind(this)
         this.goToHome=this.goToHome.bind(this)
+        this.Image=this.Image.bind(this)
       }
 delete(arg){
         
@@ -188,6 +189,12 @@ ShowList(show,deleteFun){
     closeModal=()=>{
           this.refs.editModal.close();
         }
+    Image(){
+          this.setState({
+            showAlert: true,
+            message:"This feature doesn't exist at the moment, please continue!"
+        })
+      }
     getList(){
          
           axios.get('https://hosting-property-clone.herokuapp.com/properties/search/'+this.state.agenName).then(res =>{
@@ -233,7 +240,9 @@ ShowList(show,deleteFun){
                             <Text style={{color:"#ffffff",fontSize:20,textAlign:"center"}}>{this.state.modalAddress}</Text>
                             {dropDown}
                             <View style={{borderWidth:10,borderColor:"#E0E0E0",marginTop:5}}>
+                              <TouchableOpacity onPress={this.Image}>
                               <Image style={styles.CardImage}   source={{uri: this.state.ModalimageUrl}} />
+                              </TouchableOpacity>
                             </View>
                                 <View style={{marginLeft:10,marginRight:10,alignItems:"center",marginTop:20}}>
                                         <Text style={{color:"white",fontSize:20}}>Price: R {this.state.Modalprice}</Text>
