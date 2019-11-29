@@ -3,9 +3,8 @@ import {Image,Dimensions,KeyboardAvoidingView,Text,StatusBar,Platform,TouchableO
 import { ScrollView } from "react-native-gesture-handler";
 import {Hoshi} from "react-native-textinput-effects";
 import axios from "axios";
-
+import Modal, { ModalFooter,ModalTitle, ModalButton, ModalContent } from 'react-native-modals';
 import Logo from "../../SupportScreens/Logo";
-import AwesomeAlert from 'react-native-awesome-alerts';
 
 
 export default class SignUpPage extends React.Component{
@@ -269,27 +268,24 @@ export default class SignUpPage extends React.Component{
                                 </Text>
                             </TouchableOpacity>
                     </View>
-                        <View style={{position:"absolute",height: Dimensions.get('window').height,width: Dimensions.get('window').width}}>
-                            <AwesomeAlert
-                                show={this.state.showAlert}
-                                showProgress={false}
-                                title=""
-                                message={this.state.message}
-                                closeOnTouchOutside={true}
-                                closeOnHardwareBackPress={false}
-                                showCancelButton={false}
-                                showConfirmButton={true}
-                                cancelText=""
-                                confirmText="Okay"
-                                confirmButtonColor="#DD6B55"
-                                onCancelPressed={() => {
-                                    this.hideAlert();
-                                }}
-                                onConfirmPressed={() => {
-                                    this.hideAlert();
-                                }}
-                                />
-                        </View>
+                    <Modal
+                        visible={this.state.showAlert}
+                        footer={
+                          <ModalFooter>
+                            <ModalButton
+                              text="Okay"
+                              onPress={() => {
+                                this.setState({
+                                  showAlert:false
+                                })
+                              }}
+                            />
+                          </ModalFooter>
+                        }>
+              <ModalContent>
+                      <Text>{this.state.message}</Text>
+              </ModalContent>
+            </Modal>
             </View> 
         );
     }

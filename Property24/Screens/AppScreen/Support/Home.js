@@ -9,6 +9,7 @@ import Dropdown from "./Dropdown";
 import AddImage from "./AddImage";
 import axios from "axios";
 import AwesomeAlert from 'react-native-awesome-alerts';
+import Modal, { ModalFooter,ModalTitle, ModalButton, ModalContent } from 'react-native-modals';
 import Profile from "./Profile";
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
 
@@ -99,6 +100,11 @@ save=()=>{
                 
                 }).then(res =>{
                     //this.props.navigation.navigate("ModalView",{agentName:this.state.agent});
+                    this.setState({
+                      address:"",
+                      properties:[],
+                      price:0
+                    })
                     this.props.navigation.navigate("Saved",{agentName:this.state.agent+""});
                 })
                 .catch(error =>{
@@ -202,27 +208,25 @@ let SearchBar = (
                     </TouchableOpacity>
                 </View>
             </ScrollView>
-            <View style={{position:"absolute",height: Dimensions.get('window').height,width: Dimensions.get('window').width}}>
-                            <AwesomeAlert
-                                show={this.state.showAlert}
-                                showProgress={false}
-                                title=""
-                                message={this.state.message}
-                                closeOnTouchOutside={true}
-                                closeOnHardwareBackPress={false}
-                                showCancelButton={false}
-                                showConfirmButton={true}
-                                cancelText=""
-                                confirmText="Okay"
-                                confirmButtonColor="#DD6B55"
-                                onCancelPressed={() => {
-                                    this.hideAlert();
-                                }}
-                                onConfirmPressed={() => {
-                                    this.hideAlert();
-                                }}
-                                />
-            </View>    
+           
+            <Modal
+                        visible={this.state.showAlert}
+                        footer={
+                          <ModalFooter>
+                            <ModalButton
+                              text="Okay"
+                              onPress={() => {
+                                this.setState({
+                                  showAlert:false
+                                })
+                              }}
+                            />
+                          </ModalFooter>
+                        }>
+              <ModalContent>
+                      <Text>{this.state.message}</Text>
+              </ModalContent>
+            </Modal>
         </View>
         );
     }

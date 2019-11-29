@@ -4,7 +4,7 @@ import {createStackNavigator,StackNavigator} from "react-navigation";
 import Logo from "../../SupportScreens/Logo";
 import List from "./List";
 import AddImage from "./AddImage";
-
+import Modall, { ModalFooter,ModalTitle, ModalButton, ModalContent } from 'react-native-modals';
 import Empty from "./Empty";
 import axios from "axios";
 import Modal from "react-native-modalbox";
@@ -46,7 +46,7 @@ export default class Saved extends React.Component{
             showConfirmButton:null,
             cancelText:"",
             confirmText:"",
-            val:false
+            visible:false
 
         }
         this.showEditModal=this.showEditModal.bind(this);
@@ -55,18 +55,13 @@ export default class Saved extends React.Component{
         this.save=this.save.bind(this)
         this.goToHome=this.goToHome.bind(this)
       }
-delete(){
+delete(arg){
         
-          /*axios.delete('https://hosting-property-clone.herokuapp.com/properties/'+this.state.id
-      ).then(res =>{
-        
-      })
-      .catch(error =>{
-       
-      })*/
-        
+        this.setState({
+          visible:true,
+          id:arg
 
-      
+        })
 }
 
 goToHome(){
@@ -104,7 +99,7 @@ ShowList(show,deleteFun){
                              </TouchableOpacity>
                          </View>
                          <View style={styles.socialBarSection}>
-                             <TouchableOpacity onPress={deleteFun} style={styles.socialBarButton}>
+                             <TouchableOpacity onPress={()=>{deleteFun(item["_id"])}} style={styles.socialBarButton}>
                                  <View>
                                      <Image style={styles.icon} source ={require("../../../images/icons8-trash-50.png")}/>
                                      <Text>Delete</Text>
@@ -263,7 +258,7 @@ ShowList(show,deleteFun){
                                         </TouchableOpacity>
                                     </View>
                                     <View style={styles.socialBarSection}>
-                                        <TouchableOpacity onPress={this.delete} style={styles.socialBarButton}>
+                                        <TouchableOpacity onPress={()=>{this.delete(this.state.id)}} style={styles.socialBarButton}>
                                             <View>
                                                 <Image style={styles.icon} source ={require("../../../images/icons8-trash-50.png")}/>
                                                 <Text>Delete</Text>
@@ -273,6 +268,54 @@ ShowList(show,deleteFun){
                                 </View>
                             </View>  
                 </Modal>
+                <Modall
+                        visible={this.state.visible}
+                        modalTitle={<ModalTitle title="Alert" />}
+                        footer={
+                          <ModalFooter>
+                            <ModalButton
+                              text="No, don't delete!"
+                              onPress={() => {
+                                this.setState({
+                                  visible:false
+                                })
+                              }}
+                            />
+                            <ModalButton
+                              text="Yes! I'm Sure"
+                              onPress={() => {
+                                
+                                axios.delete('https://hosting-property-clone.herokuapp.com/properties/'+this.state.id,{
+                                      "headers": {
+                                      'Content-Type': 'application/json;charset=UTF-8',
+                                      Authorization:"Bearer "+this.state.token
+                                      }
+                                  
+                                  }).then(res =>{
+                                    this.setState({
+                                      visible:false
+                                    })
+                                    this.closeModal()
+                                  })
+                                  .catch(error =>{
+                                    this.setState({
+                                      visible:false
+                                    })
+                                    this.closeModal()
+                                    
+                                  })
+                              }}
+                              
+                              
+
+                            />
+                          </ModalFooter>
+                        }
+                  >
+              <ModalContent>
+                <Text>Are you sure you want to delete this property?</Text>
+              </ModalContent>
+            </Modall> 
             </View>
         )
     }

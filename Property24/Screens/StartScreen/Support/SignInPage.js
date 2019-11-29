@@ -5,14 +5,16 @@ import { Actions } from "react-native-router-flux";
 import PropertyApp from "../../AppScreen/MainScreen/PropertyApp";
 import axios from "axios";
 import AwesomeAlert from 'react-native-awesome-alerts';
+import Modal, { ModalFooter,ModalTitle, ModalButton, ModalContent } from 'react-native-modals';
+
 
 
 export default class SignInPage extends React.Component{
     constructor(props){
     super(props);
     this.state={
-        email:"Josephmsimango98@gmail.com",
-        password:"12345678",
+        email:"",
+        password:"",
         feedback:"",
         PassMessage: "",
         message:"",
@@ -192,7 +194,7 @@ export default class SignInPage extends React.Component{
                         <TouchableOpacity onPress={this.signin} style= {styles.button}>
                             <Text style={styles.buttonText}>Sign in</Text>
                         </TouchableOpacity>
-                        
+
                     </ScrollView>
                 <View style = {styles.signupTextCont}>            
                     <Text>
@@ -205,27 +207,24 @@ export default class SignInPage extends React.Component{
                     </TouchableOpacity>
                 </View>
 
-                <View style={{position:"absolute",height: Dimensions.get('window').height,width: Dimensions.get('window').width}}>
-                            <AwesomeAlert
-                                show={this.state.showAlert}
-                                showProgress={false}
-                                title=""
-                                message={this.state.message}
-                                closeOnTouchOutside={true}
-                                closeOnHardwareBackPress={false}
-                                showCancelButton={false}
-                                showConfirmButton={true}
-                                cancelText=""
-                                confirmText="Okay"
-                                confirmButtonColor="#DD6B55"
-                                onCancelPressed={() => {
-                                    this.hideAlert();
-                                }}
-                                onConfirmPressed={() => {
-                                    this.hideAlert();
-                                }}
-                                />
-                        </View>
+                <Modal
+                        visible={this.state.showAlert}
+                        footer={
+                          <ModalFooter>
+                            <ModalButton
+                              text="Okay"
+                              onPress={() => {
+                                this.setState({
+                                  showAlert:false
+                                })
+                              }}
+                            />
+                          </ModalFooter>
+                        }>
+              <ModalContent>
+                      <Text>{this.state.message}</Text>
+              </ModalContent>
+            </Modal>
             </View> 
         );
     }

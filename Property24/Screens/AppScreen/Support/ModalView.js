@@ -84,7 +84,7 @@ export default class ModalView extends React.Component{
           this.getAPIData()
         let mod =(
           <Modal ref={"editModal"} transparent={true} swipeToClose={false} style={{backgroundColor:"#455a64",borderRadius:Platform.OS==="ios" ? 30:0, shadowRadius:10}} backdrop={true} onClosed={()=>{ alert("edited")}}>
-         
+            
           
           </Modal>
         )
