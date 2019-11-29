@@ -2,13 +2,11 @@ import React,{Component, Fragment} from "react";
 import {Text,Image,Dimensions,StatusBar,Slider,Platform,StyleSheet,TextInput,Button,View,TouchableOpacity} from "react-native";
 import Icon from 'react-native-vector-icons/Ionicons';
 import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
-import {createStackNavigator,StackNavigator, ScrollView} from "react-navigation";
 import Logo from "../../SupportScreens/Logo";
 import Search from "./Search";
 import Dropdown from "./Dropdown";
 import AddImage from "./AddImage";
 import axios from "axios";
-import Modal from "react-native-material-dropdown" 
 import AwesomeAlert from 'react-native-awesome-alerts';
 import Profile from "./Profile";
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
@@ -47,24 +45,134 @@ export default class Edit extends React.Component{
 
         }
     }
-    getPreData(){
-      axios.get('https://hosting-property-clone.herokuapp.com/properties/'+this.props.navigation.state.params["agent"], {
-              
-              }).then(res =>{
-                  console.log(res)
-                  this.setState({
-                          address: res.data["location"],
-                  })
-              })
-              .catch(error =>{
-                  console.log(error)
-                  this.setState({
-                      showAlert: true,
-                      message:"Property already exists!"
-                  });
-              })
-  }
+showAlert = () => {
+        this.setState({
+          showAlert: true
+        });
+      };
+     
+hideAlert = () => {
+        this.setState({
+          showAlert: false
+        });
+      };
+getAdd(data){
+// console.log("add",data);
+this.setState(
+    {
+      address: data.formatted_address+"", // selected address
+    }
+  );
+}
+save=()=>{
+if(this.state.address==""){
+    this.setState({
+        showAlert: true,
+        message:"Please fill in all fields to create a property!"
+      });
+}
+else if(this.state.properties==[]){
+    this.setState({
+        showAlert: true,
+        message:"Please fill in all fields to create a property!"
+      });
+}
+
+else if (this.state.price==0){
+    this.setState({
+        showAlert: true,
+        message:"Please fill in all fields to create a property!"
+      });
+}
+else{
+    
+    axios.post('https://hosting-property-clone.herokuapp.com/properties', {
+                
+                "agent": this.state.agent,
+                "name": this.state.properties+"",
+                "location": this.state.address,
+                "imageUrl": "https://specials-images.forbesimg.com/imageserve/1026205392/960x0.jpg",
+                "price": "R "+this.state.price
+            },{
+                "headers": {
+                'Content-Type': 'application/json;charset=UTF-8',
+                Authorization:"Bearer "+this.state.token
+                }
+            
+            }).then(res =>{
+                //this.props.navigation.navigate("ModalView",{agentName:this.state.agent});
+                this.props.navigation.navigate("Saved",{agentName:this.state.agent+""});
+            })
+            .catch(error =>{
+                console.log(error)
+                this.setState({
+                    showAlert: true,
+                    message:"Property already exists!"
+                });
+            })
+          //  this.props.navigation.navigate("Saved");
+}
+}
+onSelectedItemsChange = (selectedItems) => {
+this.setState({ properties:selectedItems });    
+};
+string(){
+  var ad = this.state.address
+  console.log(ad)
+    return(ad)
+}
+getPreData(){
+    axios.get('https://hosting-property-clone.herokuapp.com/properties/'+this.props.navigation.state.params["agent"], {
+            
+            }).then(res =>{
+                var prop = res.data["name"].split(",")
+                if(prop.length==1){
+                    prop[0]=prop[0].replace(",","")
+                }
+                var pri = res.data["price"]
+
+                console.log(res.data["location"])
+                pri=parseInt(pri.replace("R ",""))
+                this.setState({
+                        response:res,
+                        agent: res.data["agent"],
+                        properties: prop,
+                        address: res.data["location"],
+                        imageUrl: res.data["imageUrl"],
+                        price: pri
+                })
+            })
+            .catch(error =>{
+                console.log(error)
+                this.setState({
+                    showAlert: true,
+                    message:"Property already exists!"
+                });
+            })
+}
+
 render(){
+    this.getPreData()
+    let dropDown =(
+    <View style={{backgroundColor:"#bcbcbc",borderColor:"#E0E0E0",borderWidth:1}}>
+            <View style={{borderWidth:7,borderColor:"#E0E0E0",backgroundColor:"#E0E0E0"}}>
+                <View style={{borderRadius:10,borderWidth:1,backgroundColor:"#ffffff",borderColor:"#ffffff"}}>
+                    <SectionedMultiSelect
+                    items={items}
+                    uniqueKey="id"
+                    selectText="Select Property type\name"
+                    showDropDowns={true}
+                    showCancelButton={true}
+                    showRemoveAll={true}
+                    hideSearch={true}
+                    onSelectedItemsChange={this.onSelectedItemsChange}
+                    selectedItems={this.state.properties}
+                    colors={{selectToggleTextColor:"#B0B0B0"}}
+                    />
+                </View>
+            </View>
+        </View>
+    )
         let SearchBar = (
         <View>
                 <GooglePlacesAutocomplete
@@ -72,7 +180,7 @@ render(){
                 minLength={2} // minimum length of text to search
                 autoFocus={false}
                 fetchDetails={true}
-                returnKeyType={'string'}
+                returnKeyType={'default'}
                 onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
 
                 var data = details;
@@ -85,7 +193,7 @@ render(){
                 types: 'geocode', // default: 'geocode'
                 }}
                   getDefaultValue={() => {
-                    return ""; // text input default value	            return ""; // text input default value
+                    return this.string(); // text input default value	            return ""; // text input default value
                   }}
                 listViewDisplayed="false"
                 styles={{
@@ -117,7 +225,64 @@ render(){
                     <Text style={{textAlign:"center", backgroundColor: "#00BFFF",color:"#ffffff"}}>Edit</Text>
                     <ScrollView>
                         {SearchBar}
+                        <View  style={{marginTop:5,marginBottom:5}}>
+                            {dropDown} 
+                        </View>
+                        <TouchableOpacity onPress={this.openCamera}>
+                                <Image style={{borderWidth:10,borderColor:"#E0E0E0",width:null,height: 200}} source ={require("../../../images/image.png")}/>
+                        </TouchableOpacity>
+                        <View style={{marginLeft:10,marginRight:10,alignItems:"center",marginTop:20}}>
+                                <Text style={{color:"white",fontSize:20}}>Price: R {this.state.price}</Text>
+                                <Slider style={styles.sliderBar} minimumValue={0} maximumValue={1000000} step={100} value={this.state.price} onValueChange={(price)=>this.setState({price})} minimumTrackTintColor="#FFFFFF" maximumTrackTintColor="#000000"/>					
+                        </View>
+
+                        <View style={{alignItems:"center"}}>
+                            <TouchableOpacity onPress={this.save} style= {styles.button}>
+                                        <Text style={styles.buttonText} >Save</Text>
+                            </TouchableOpacity>
+                        </View>
                     </ScrollView>
+                    <View style={styles.cardFooter}>
+                                <View style={styles.socialBarContainer} > 
+                                    <View style={styles.socialBarSection} >
+                                        <TouchableOpacity  onPress={()=>{show(),fun(item["_id"])}} style={styles.socialBarButton} >
+                                            <View>
+                                                <Image style={styles.icon} source ={require("../../../images/icons8-close-window-50.png")} />
+                                                <Text>Cancel</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.socialBarSection}>
+                                        <TouchableOpacity onPress={this.delete} style={styles.socialBarButton}>
+                                            <View>
+                                                <Image style={styles.icon} source ={require("../../../images/icons8-trash-50.png")}/>
+                                                <Text>Delete</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                    <View style={{position:"absolute",height: Dimensions.get('window').height,width: Dimensions.get('window').width}}>
+                                    <AwesomeAlert
+                                        show={this.state.showAlert}
+                                        showProgress={false}
+                                        title=""
+                                        message={this.state.message}
+                                        closeOnTouchOutside={true}
+                                        closeOnHardwareBackPress={false}
+                                        showCancelButton={false}
+                                        showConfirmButton={true}
+                                        cancelText="Cancel"
+                                        confirmText="."
+                                        confirmButtonColor="#DD6B55"
+                                        onCancelPressed={() => {
+                                            this.hideAlert();
+                                        }}
+                                        onConfirmPressed={() => {
+                                            this.hideAlert();
+                                        }}
+                                        />
+                    </View>    
                 </View>
                 );
             }

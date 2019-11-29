@@ -4,6 +4,7 @@ import {createStackNavigator,StackNavigator} from "react-navigation";
 import Logo from "../../SupportScreens/Logo";
 import List from "./List";
 import AddImage from "./AddImage";
+import AwesomeAlert from 'react-native-awesome-alerts';
 import Empty from "./Empty";
 import axios from "axios";
 import Modal from "react-native-modalbox";
@@ -32,19 +33,30 @@ export default class Saved extends React.Component{
         this.state={
             agenName:this.props.navigation.state.params.data.agent["firstName"],
             array:[],
+            id:"",
             Modalproperties: [],
             modalAddress:"",
             ModalimageUrl: "",
-            Modalprice: 0
+            Modalprice: 0,
+            title:"",
+            message:"",
+            showAlert:false,
+            showCancelButton:false,
+            confirmText:"",
+            cancelText:""
+
         }
         this.showEditModal=this.showEditModal.bind(this);
         this.method=this.method.bind(this)
+        this.delete=this.delete.bind(this)
     }
     method(){
     this.state.modalAddress
     }
      showEditModal=(arg)=>{
+       
         axios.get('https://hosting-property-clone.herokuapp.com/properties/'+arg).then(res =>{
+          console.log(res)
           var prop = res.data["name"].split(",")
                 if(prop.length==1){
                     prop[0]=prop[0].replace(",","")
@@ -54,6 +66,7 @@ export default class Saved extends React.Component{
                 pri=parseInt(pri.replace("R ",""))
                 this.setState({
                         response:res,
+                        id: res.data["_id"],
                         agent: res.data["agent"],
                         Modalproperties: prop,
                         modalAddress:res.data["location"],
@@ -85,7 +98,54 @@ export default class Saved extends React.Component{
         this.setState({array:res.data})
     })
   }
-    ShowList(show){
+    delete(){
+  
+      this.setState({
+        title:"Alert",
+        message:"Are you sure! you want to delete this property?",
+        showAlert:true,
+        showCancelButton:true,
+        confirmText:"Yes! I'm sure",
+        cancelText:"No, Don't Delete!"
+      })
+    }
+    onDeleteCheck(arg){
+      if(arg=="Yes! I'm sure"){
+        this.deleteFromDB()
+      }else{
+        
+      }
+    }
+    deleteFromDB(){
+      this.setState({
+        showAlert: true,
+        message:"Something went, Couldn't Delete Property!",
+        showCancelButton:false,
+        confirmText:"Okay"
+    });
+      this.closeModal()
+      /*axios.post('https://hosting-property-clone.herokuapp.com/properties/'+this.state.id).then(res =>{
+        this.setState({
+          showAlert: true,
+          message:"Something went, Couldn't Delete Property!",
+          showCancelButton:false,
+          confirmText:"Okay"
+      });
+    })
+    .catch(error =>{
+        this.setState({
+            showAlert: true,
+            message:"Property Deleted!",
+            showCancelButton:false,
+            confirmText:"Okay"
+
+        });
+        this.closeModal()
+
+
+    })*/
+    }
+    ShowList(show,deleteFun){
         this.getList()
          /* var list =this.state.array.services.map()*/
         let jsonData = this.state.array
@@ -116,7 +176,7 @@ export default class Saved extends React.Component{
                              </TouchableOpacity>
                          </View>
                          <View style={styles.socialBarSection}>
-                             <TouchableOpacity onPress={this.delete} style={styles.socialBarButton}>
+                             <TouchableOpacity onPress={deleteFun} style={styles.socialBarButton}>
                                  <View>
                                      <Image style={styles.icon} source ={require("../../../images/icons8-trash-50.png")}/>
                                      <Text>Delete</Text>
@@ -170,7 +230,7 @@ export default class Saved extends React.Component{
                 <Logo/>
                 </TouchableOpacity>
                 {
-                 this.ShowList(this.showEditModal)
+                 this.ShowList(this.showEditModal,this.delete)
                 }
                 <Modal ref={"editModal"} transparent={true} swipeToClose={false} style={{backgroundColor:"#455a64",borderRadius:Platform.OS==="ios" ? 30:0, shadowRadius:10}} backdrop={true} onClosed={()=>{ alert("edited")}}>
                   <Logo/>
@@ -179,7 +239,7 @@ export default class Saved extends React.Component{
                     <ScrollView>
                             <Text style={{color:"#ffffff",fontSize:20,textAlign:"center"}}>{this.state.modalAddress}</Text>
                             {dropDown}
-                            <View style={{borderWidth:10,borderColor:"#E0E0E0",paddingTop:5}}>
+                            <View style={{borderWidth:10,borderColor:"#E0E0E0",marginTop:5}}>
                               <Image style={styles.CardImage}   source={{uri: this.state.ModalimageUrl}} />
                             </View>
                                 <View style={{marginLeft:10,marginRight:10,alignItems:"center",marginTop:20}}>
@@ -197,7 +257,7 @@ export default class Saved extends React.Component{
                     <View style={styles.cardFooter}>
                                 <View style={styles.socialBarContainer} > 
                                     <View style={styles.socialBarSection} >
-                                        <TouchableOpacity  onPress={()=>{show(),fun(item["_id"])}} style={styles.socialBarButton} >
+                                        <TouchableOpacity  onPress={this.closeModal} style={styles.socialBarButton} >
                                             <View>
                                                 <Image style={styles.icon} source ={require("../../../images/icons8-close-window-50.png")} />
                                                 <Text>Cancel</Text>
@@ -215,6 +275,27 @@ export default class Saved extends React.Component{
                                 </View>
                             </View>  
                 </Modal>
+                <View style={{position:"absolute",height: Dimensions.get('window').height,width: Dimensions.get('window').width}}>
+                            <AwesomeAlert
+                                show={this.state.showAlert}
+                                showProgress={false}
+                                title={this.state.title}
+                                message={this.state.message}
+                                closeOnTouchOutside={true}
+                                closeOnHardwareBackPress={false}
+                                showCancelButton={this.state.showCancelButton}
+                                showConfirmButton={true}
+                                cancelText={this.state.cancelText}
+                                confirmText={this.state.confirmText}
+                                confirmButtonColor="#DD6B55"
+                                onCancelPressed={() => {
+                                    this.hideAlert();
+                                }}
+                                onConfirmPressed={() => {
+                                  this.onDeleteCheck(this.state.confirmText)
+                                }}
+                                />
+            </View>    
             </View>
         )
     }
