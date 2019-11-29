@@ -6,40 +6,86 @@ import List from "./List";
 import AddImage from "./AddImage";
 import Empty from "./Empty";
 import axios from "axios";
-import Modal, {ModalTitle,ModalFooter, ModalButton, ModalContent } from 'react-native-modals';
+import Modal from "react-native-modalbox";
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import {GooglePlacesAutocomplete} from "react-native-google-places-autocomplete";
 
+const items=[
+  {name: "House",
+  id:"House"},
+  {name: "Apartment",
+  id:"Apartment"},
+  {name: "Townhouse",
+  id:"Townhouse"},
+  {name: "Vacant Land",
+  id:"Vacant Land"},
+  {name: "Farm",
+  id:"Farm"},
+  {name: "Commercial",
+  id:"Commercial"},
+  {name:  "Industrial",
+  id:"Industrial"}
+]
 export default class Saved extends React.Component{
     constructor(props){
         super(props);
         this.state={
             agenName:this.props.navigation.state.params.data.agent["firstName"],
             array:[],
-            id:"",
-            visible: false,
+            Modalproperties: [],
+            modalAddress:"",
+            ModalimageUrl: "",
+            Modalprice: 0
         }
         this.showEditModal=this.showEditModal.bind(this);
-        this.setPropId=this.setPropId.bind(this);
+        this.method=this.method.bind(this)
     }
-    getList(){
-        axios.get('https://hosting-property-clone.herokuapp.com/properties/search/'+this.state.agenName).then(res =>{
-        
-          this.setState({array:res.data})
+    method(){
+    this.state.modalAddress
+    }
+     showEditModal=(arg)=>{
+        axios.get('https://hosting-property-clone.herokuapp.com/properties/'+arg).then(res =>{
+          var prop = res.data["name"].split(",")
+                if(prop.length==1){
+                    prop[0]=prop[0].replace(",","")
+                }
+                var pri = res.data["price"]
+
+                pri=parseInt(pri.replace("R ",""))
+                this.setState({
+                        response:res,
+                        agent: res.data["agent"],
+                        Modalproperties: prop,
+                        modalAddress:res.data["location"],
+                        ModalimageUrl: res.data["imageUrl"],
+                        Modalprice: pri
+                })
+          this.setState({
+              
+              
+            })
       })
-    }
-    showEditModal=()=>{
-        this.props.navigation.navigate("Edit",this.state.id);
+      this.refs.editModal.open();
+      
+//console.log(arg)
+        // this.props.navigation.navigate("Edit",{agent:arg});
       }
+    save(){
+        console.log("yey")
+      }
+    onSelectedItemsChange = (selectedItems) => {
+        this.setState({ modalAddress:selectedItems });    
+        };
     closeModal=()=>{
       this.refs.editModal.close();
     }
-    setPropId(PropId){
-        this.setState({
-          id:PropId
-        })
-      }
-    ShowList(show,fun){
+    getList(){
+      axios.get('https://hosting-property-clone.herokuapp.com/properties/search/'+this.state.agenName).then(res =>{
+      
+        this.setState({array:res.data})
+    })
+  }
+    ShowList(show){
         this.getList()
          /* var list =this.state.array.services.map()*/
         let jsonData = this.state.array
@@ -62,7 +108,7 @@ export default class Saved extends React.Component{
              <View style={styles.cardFooter}>
                      <View style={styles.socialBarContainer} > 
                          <View style={styles.socialBarSection} >
-                             <TouchableOpacity  onPress={()=>{show(),fun(item["_id"])}} style={styles.socialBarButton} >
+                             <TouchableOpacity  onPress={()=>{show(item["_id"])}} style={styles.socialBarButton} >
                                  <View>
                                      <Image style={styles.icon} source ={require("../../../images/icons8-edit-64.png")} />
                                      <Text>Edit</Text>
@@ -98,49 +144,25 @@ export default class Saved extends React.Component{
         //console.log(data); <Text onPress={}>Click</Text>
         }
     render(){
-        let SearchBar = (
-            <View>
-            <GooglePlacesAutocomplete
-            placeholder='Search'
-            minLength={2} // minimum length of text to search
-            autoFocus={false}
-            fetchDetails={true}
-            returnKeyType={'default'}
-            onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-        
-              var data = details;
-              this.getAdd(data);
-            }}
-            query={{
-              // available options: https://developers.google.com/places/web-service/autocomplete
-              key: 'AIzaSyBnghjKCGZfylLUWssl8SQbM8ILGeYW5l0',
-              language: 'en',
-              types: 'geocode', // default: 'geocode'
-            }}
-        
-            listViewDisplayed="false"
-            styles={{
-                textInputContainer: {
-                  width: '100%'
-                },
-                description: {
-                  fontWeight: 'bold'
-                },
-                predefinedPlacesDescription: {
-                  color: '#1faadb'
-                }
-              }}
-        
-            currentLocation={false} // Will add a 'Current location' button at the top of the predefined places list
-            currentLocationLabel="Current location"
-            nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-        
-            filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-            // predefinedPlaces={[]}
-        
-            predefinedPlacesAlwaysVisible={true}
-          />
-        </View>
+      let dropDown =(
+        <View style={{backgroundColor:"#bcbcbc",borderColor:"#E0E0E0",borderWidth:1}}>
+                <View style={{borderWidth:7,borderColor:"#E0E0E0",backgroundColor:"#E0E0E0"}}>
+                    <View style={{borderRadius:10,borderWidth:1,backgroundColor:"#ffffff",borderColor:"#ffffff"}}>
+                        <SectionedMultiSelect
+                        items={items}
+                        uniqueKey="id"
+                        selectText="Select Property type\name"
+                        showDropDowns={true}
+                        showCancelButton={true}
+                        showRemoveAll={true}
+                        hideSearch={true}
+                        onSelectedItemsChange={this.onSelectedItemsChange}
+                        selectedItems={this.state.Modalproperties}
+                        colors={{selectToggleTextColor:"#B0B0B0"}}
+                        />
+                    </View>
+                </View>
+            </View>
         )
         return(
             <View style={styles.container}>
@@ -148,8 +170,51 @@ export default class Saved extends React.Component{
                 <Logo/>
                 </TouchableOpacity>
                 {
-                 this.ShowList(this.showEditModal,this.setPropId)
+                 this.ShowList(this.showEditModal)
                 }
+                <Modal ref={"editModal"} transparent={true} swipeToClose={false} style={{backgroundColor:"#455a64",borderRadius:Platform.OS==="ios" ? 30:0, shadowRadius:10}} backdrop={true} onClosed={()=>{ alert("edited")}}>
+                  <Logo/>
+                  <Text style={{textAlign:"center", backgroundColor: "#00BFFF",color:"#ffffff"}}>Edit</Text>
+                  <View style={{flex:1,marginLeft:5,marginRight:5}}> 
+                    <ScrollView>
+                            <Text style={{color:"#ffffff",fontSize:20,textAlign:"center"}}>{this.state.modalAddress}</Text>
+                            {dropDown}
+                            <View style={{borderWidth:10,borderColor:"#E0E0E0",paddingTop:5}}>
+                              <Image style={styles.CardImage}   source={{uri: this.state.ModalimageUrl}} />
+                            </View>
+                                <View style={{marginLeft:10,marginRight:10,alignItems:"center",marginTop:20}}>
+                                        <Text style={{color:"white",fontSize:20}}>Price: R {this.state.Modalprice}</Text>
+                                        <Slider style={styles.sliderBar} minimumValue={0} maximumValue={1000000} step={100} value={this.state.Modalprice} onValueChange={(price)=>this.setState({price})} minimumTrackTintColor="#FFFFFF" maximumTrackTintColor="#000000"/>					
+                                </View>
+
+                                <View style={{alignItems:"center"}}>
+                                    <TouchableOpacity onPress={this.save} style= {styles.button}>
+                                                <Text style={styles.buttonText} >Save</Text>
+                                    </TouchableOpacity>
+                                </View>
+                    </ScrollView>
+                    </View>      
+                    <View style={styles.cardFooter}>
+                                <View style={styles.socialBarContainer} > 
+                                    <View style={styles.socialBarSection} >
+                                        <TouchableOpacity  onPress={()=>{show(),fun(item["_id"])}} style={styles.socialBarButton} >
+                                            <View>
+                                                <Image style={styles.icon} source ={require("../../../images/icons8-close-window-50.png")} />
+                                                <Text>Cancel</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.socialBarSection}>
+                                        <TouchableOpacity onPress={this.delete} style={styles.socialBarButton}>
+                                            <View>
+                                                <Image style={styles.icon} source ={require("../../../images/icons8-trash-50.png")}/>
+                                                <Text>Delete</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>  
+                </Modal>
             </View>
         )
     }
@@ -212,13 +277,7 @@ const styles = StyleSheet.create({
       cardFooter:{
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingTop: 12.5,
-        borderBottomLeftRadius: 1,
-        borderBottomRightRadius: 1,
-        borderColor:"#ffffff",
-        borderLeftWidth:5,
-        borderRightWidth:5
-        
+        borderColor:"#ffffff",        
       },
       CardImage:{
         flex: 1,
