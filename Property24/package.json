@@ -49,7 +49,7 @@
     "react-native-multiple-select": "^0.5.3",
     "react-native-paper": "^2.16.0",
     "react-native-permissions": "^2.0.3",
-    "react-native-reanimated": "^1.4.0",
+    "react-native-reanimated": "^2.10.0",
     "react-native-router-flux": "^4.0.6",
     "react-native-scripts": "^2.0.1",
     "react-native-sectioned-multi-select": "^0.7.2",
